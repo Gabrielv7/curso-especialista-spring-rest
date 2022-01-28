@@ -14,7 +14,7 @@ import javax.persistence.Id;
 @Setter
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @Entity
-public class Cozinha {
+public class FormaPagamento {
 
     @EqualsAndHashCode.Include
     @Id
@@ -22,6 +22,6 @@ public class Cozinha {
     private Long id;
 
     @Column(nullable = false)
-    private String nome;
+    private String descricao;
 
 }
