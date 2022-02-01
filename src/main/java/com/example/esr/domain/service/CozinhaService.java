@@ -16,12 +16,12 @@ public interface CozinhaService {
     Cozinha salvar(Cozinha cozinha);
 
     /**
-     * Retorna uma lista de cozinhas
+     * Busca uma lista de cozinhas
      */
     List<Cozinha> listar();
 
     /**
-     * Retorna uma cozinha
+     * Busca uma cozinha
      * @param id Identificador da cozinha
      * @return Cozinha
      */
