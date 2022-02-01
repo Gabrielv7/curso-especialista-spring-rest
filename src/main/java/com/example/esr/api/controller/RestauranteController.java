@@ -1,17 +1,17 @@
 package com.example.esr.api.controller;
 
-import com.example.esr.domain.exception.EntidadeEmUsoException;
 import com.example.esr.domain.exception.EntidadeNaoEncontradaException;
 import com.example.esr.domain.model.Restaurante;
 import com.example.esr.domain.service.RestauranteService;
+import org.springframework.beans.BeanUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -65,5 +65,32 @@ public class RestauranteController {
         }
 
     }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<?> atualizar(@PathVariable Long id,
+                                       @RequestBody Restaurante restaurante) {
+        try {
+
+            Restaurante restauranteAtual = service.buscar(id);
+
+            if (Objects.nonNull(restauranteAtual)) {
+
+                BeanUtils.copyProperties(restaurante, restauranteAtual, "id");
+
+                restauranteAtual = service.salvar(restauranteAtual);
+
+                return ResponseEntity.ok(restauranteAtual);
+
+            }
+
+            return ResponseEntity.notFound().build();
+
+        } catch (EntidadeNaoEncontradaException e) {
+
+            return ResponseEntity.badRequest().body(e.getMessage());
+
+        }
+    }
+
 
 }
