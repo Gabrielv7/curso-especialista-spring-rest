@@ -28,8 +28,8 @@ public interface CozinhaRepository {
 
     /**
      * remove uma cozinha do banco de dados
-     * @param cozinha
+     * @param id Identificador da cozinha
      */
-    void remover(Cozinha cozinha);
+    void remover(Long id);
 
 }
