@@ -32,4 +32,6 @@ public interface CozinhaRepository {
      */
     void remover(Long id);
 
+    List<Cozinha> consultarPorNome(String nome);
+
 }
