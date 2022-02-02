@@ -10,7 +10,6 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Objects;
 
 @Service
 public class CozinhaServiceImpl implements CozinhaService {
@@ -24,29 +23,22 @@ public class CozinhaServiceImpl implements CozinhaService {
     @Override
     public Cozinha salvar(Cozinha cozinha) {
 
-        return cozinhaRepository.salvar(cozinha);
+        return cozinhaRepository.save(cozinha);
 
     }
 
     @Override
     public List<Cozinha> listar() {
 
-        return cozinhaRepository.listar();
+        return cozinhaRepository.findAll();
 
     }
 
     @Override
     public Cozinha buscar(Long id) {
 
-        var cozinha = cozinhaRepository.buscar(id);
+        return cozinhaRepository.findById(id).orElse(null);
 
-        if(Objects.nonNull(cozinha)){
-
-            return cozinha;
-
-        }
-
-        return null;
     }
 
     @Override
@@ -54,7 +46,7 @@ public class CozinhaServiceImpl implements CozinhaService {
 
         try {
 
-            cozinhaRepository.remover(id);
+            cozinhaRepository.deleteById(id);
 
         }catch (EmptyResultDataAccessException ex){
 

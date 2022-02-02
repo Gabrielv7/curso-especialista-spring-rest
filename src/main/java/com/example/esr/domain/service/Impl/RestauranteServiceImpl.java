@@ -11,7 +11,6 @@ import org.springframework.util.ReflectionUtils;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
 @Service
 public class RestauranteServiceImpl implements RestauranteService {
@@ -27,22 +26,14 @@ public class RestauranteServiceImpl implements RestauranteService {
     @Override
     public List<Restaurante> listar() {
 
-        return restauranteRepository.listar();
+        return restauranteRepository.findAll();
 
     }
 
     @Override
     public Restaurante buscar(Long id) {
 
-        var restaurante = restauranteRepository.buscar(id);
-
-        if(Objects.nonNull(restaurante)){
-
-            return restaurante;
-
-        }
-
-            return null;
+       return restauranteRepository.findById(id).orElse(null);
     }
 
     @Override
@@ -51,22 +42,16 @@ public class RestauranteServiceImpl implements RestauranteService {
         // Pega o ID da cozinha
         long cozinhaId  = restaurante.getCozinha().getId();
 
-        // busca a cozinha pelo Id
-        var cozinha = cozinhaRepository.buscar(cozinhaId);
-
-        // Se a cozinha não existir lança a exeção EntidadeNaoEncontradaException
-        if(Objects.isNull(cozinha)){
-
-            throw new EntidadeNaoEncontradaException(
-                    String.format("Não existe cadastro de cozinha com o código %d.", cozinhaId)
-            );
-
-        }
+        // busca a cozinha pelo ID, se a cozinha não existir lança a exeção EntidadeNaoEncontradaException
+        var cozinha = cozinhaRepository.findById(cozinhaId)
+                             .orElseThrow(()-> new EntidadeNaoEncontradaException(
+                                     String.format("Não existe cadastro de cozinha com o código %d.", cozinhaId)
+                             ));
 
         // Se a cozinha existir ela é adicionada ao restaurante
         restaurante.setCozinha(cozinha);
 
-        return restauranteRepository.salvar(restaurante);
+        return restauranteRepository.save(restaurante);
     }
 
     @Override

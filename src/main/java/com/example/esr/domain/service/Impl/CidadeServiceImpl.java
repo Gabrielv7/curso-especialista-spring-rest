@@ -11,7 +11,6 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Objects;
 
 @Service
 public class CidadeServiceImpl implements CidadeService {
@@ -27,22 +26,15 @@ public class CidadeServiceImpl implements CidadeService {
     @Override
     public List<Cidade> listar() {
 
-        return cidadeRepository.listar();
+        return cidadeRepository.findAll();
 
     }
 
     @Override
     public Cidade buscar(Long id) {
 
-        var cidade = cidadeRepository.buscar(id);
+        return cidadeRepository.findById(id).orElse(null);
 
-        if(Objects.nonNull(cidade)){
-
-            return cidade;
-
-        }
-
-             return null;
     }
 
     @Override
@@ -51,22 +43,16 @@ public class CidadeServiceImpl implements CidadeService {
         // pega o ID do estado
         long idEstado = cidade.getEstado().getId();
 
-        // busca o estado pelo ID
-        var estado = estadoRepository.buscar(idEstado);
-
-        // Se o estado não existir lança a exeção EntidadeNaoEncontradaException
-        if(Objects.isNull(estado)){
-
-            throw new EntidadeNaoEncontradaException(
-                    String.format("Não existe cadastro de estado com o código %d.", idEstado)
-            );
-
-        }
+        // busca o estado pelo ID se o estado não existir lança a exeção EntidadeNaoEncontradaException
+        var estado = estadoRepository.findById(idEstado)
+                            .orElseThrow(()-> new EntidadeNaoEncontradaException(
+                                 String.format("Não existe cadastro de estado com o código %d.", idEstado)
+                            ));
 
         // Se o estado existir ele é adicionado ao restaurante
         cidade.setEstado(estado);
 
-        return cidadeRepository.salvar(cidade);
+        return cidadeRepository.save(cidade);
 
     }
 
@@ -75,7 +61,7 @@ public class CidadeServiceImpl implements CidadeService {
 
         try {
 
-            cidadeRepository.remover(id);
+            cidadeRepository.deleteById(id);
 
         }catch (EmptyResultDataAccessException ex){
 

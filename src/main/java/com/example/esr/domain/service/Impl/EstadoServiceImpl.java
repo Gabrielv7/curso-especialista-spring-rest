@@ -10,7 +10,6 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Objects;
 
 @Service
 public class EstadoServiceImpl implements EstadoService {
@@ -26,28 +25,20 @@ public class EstadoServiceImpl implements EstadoService {
     @Override
     public List<Estado> listar() {
 
-        return estadoRepository.listar();
+        return estadoRepository.findAll();
 
     }
 
     @Override
     public Estado buscar(Long id) {
 
-        var estado = estadoRepository.buscar(id);
-
-        if(Objects.nonNull(estado)){
-
-            return estado;
-
-        }
-
-        return null;
+        return estadoRepository.findById(id).orElse(null);
     }
 
     @Override
     public Estado salvar(Estado estado) {
 
-        return estadoRepository.salvar(estado);
+        return estadoRepository.save(estado);
 
     }
 
@@ -56,7 +47,7 @@ public class EstadoServiceImpl implements EstadoService {
 
         try{
 
-            estadoRepository.remover(id);
+            estadoRepository.deleteById(id);
 
         }catch (EmptyResultDataAccessException ex){
 

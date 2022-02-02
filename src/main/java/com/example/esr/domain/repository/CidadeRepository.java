@@ -1,35 +1,10 @@
 package com.example.esr.domain.repository;
 
 import com.example.esr.domain.model.Cidade;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
-import java.util.List;
-
-public interface CidadeRepository {
-
-    /**
-     * busca uma lista de cidades
-     * @return lista de cidades
-     */
-    List<Cidade> listar();
-
-    /**
-     * busca uma cidade pelo ID
-     * @param id Identificador da cidade
-     * @return Cidade
-     */
-    Cidade buscar(Long id);
-
-    /**
-     * salva uma cidade no banco de dados
-     * @param cidade
-     * @return Cidade salva
-     */
-    Cidade salvar(Cidade cidade);
-
-    /**
-     * remove uma cidade do banco de dados
-     * @param id Identificador da cidade
-     */
-     void remover(Long id);
+@Repository
+public interface CidadeRepository extends JpaRepository<Cidade, Long> {
 
 }
