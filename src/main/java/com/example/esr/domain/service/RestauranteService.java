@@ -15,7 +15,7 @@ public interface RestauranteService {
     /**
      * Busca um restaurante
      * @param id Identificador do restaurante
-     * @return
+     * @return Restaurante
      */
     Restaurante buscar(Long id);
 
@@ -23,7 +23,7 @@ public interface RestauranteService {
      * Adiciona um restaurante no banco de dados
      * @param restaurante
      * @throws EntidadeNaoEncontradaException
-     * @return
+     * @return Restaurante Salvo
      */
     Restaurante salvar(Restaurante restaurante);
 

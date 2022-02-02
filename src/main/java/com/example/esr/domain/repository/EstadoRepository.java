@@ -28,8 +28,8 @@ public interface EstadoRepository {
 
     /**
      * remove um estado do banco de dados
-     * @param estado
+     * @param id Identificador do estado
      */
-     void remover(Estado estado);
+     void remover(Long id);
 
 }

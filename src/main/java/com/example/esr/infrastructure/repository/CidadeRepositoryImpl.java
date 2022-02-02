@@ -2,12 +2,14 @@ package com.example.esr.infrastructure.repository;
 
 import com.example.esr.domain.model.Cidade;
 import com.example.esr.domain.repository.CidadeRepository;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Component;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.transaction.Transactional;
 import java.util.List;
+import java.util.Objects;
 
 @Component
 public class CidadeRepositoryImpl implements CidadeRepository {
@@ -39,10 +41,17 @@ public class CidadeRepositoryImpl implements CidadeRepository {
 
     @Transactional
     @Override
-    public void remover(Cidade cidade) {
+    public void remover(Long id) {
 
-        cidade = this.buscar(cidade.getId());
-        manager.remove(cidade);
+        var cidade = this.buscar(id);
+
+        if(Objects.isNull(cidade)){
+
+            throw new EmptyResultDataAccessException(1);
+
+        }
+
+            manager.remove(cidade);
 
     }
 }

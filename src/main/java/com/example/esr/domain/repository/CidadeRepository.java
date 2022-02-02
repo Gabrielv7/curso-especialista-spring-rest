@@ -28,8 +28,8 @@ public interface CidadeRepository {
 
     /**
      * remove uma cidade do banco de dados
-     * @param cidade
+     * @param id Identificador da cidade
      */
-     void remover(Cidade cidade);
+     void remover(Long id);
 
 }

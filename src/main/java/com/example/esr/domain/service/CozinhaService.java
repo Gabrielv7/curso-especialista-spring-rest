@@ -11,7 +11,7 @@ public interface CozinhaService {
     /**
      * Adiciona um cozinha no banco de dados
      * @param cozinha
-     * @return Cozinha Salva
+     * @return Cozinha salva
      */
     Cozinha salvar(Cozinha cozinha);
 

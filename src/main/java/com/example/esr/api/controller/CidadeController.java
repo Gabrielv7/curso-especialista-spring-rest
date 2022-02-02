@@ -2,8 +2,8 @@ package com.example.esr.api.controller;
 
 import com.example.esr.domain.exception.EntidadeEmUsoException;
 import com.example.esr.domain.exception.EntidadeNaoEncontradaException;
-import com.example.esr.domain.model.Estado;
-import com.example.esr.domain.service.EstadoService;
+import com.example.esr.domain.model.Cidade;
+import com.example.esr.domain.service.CidadeService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,76 +14,94 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 import java.util.Objects;
 
 @RestController
-@RequestMapping("/estados")
-public class EstadoController {
+@RequestMapping("/cidades")
+public class CidadeController {
 
-    private final EstadoService service;
+    private final CidadeService service;
 
-    public EstadoController(EstadoService service) {
+    public CidadeController(CidadeService service) {
         this.service = service;
     }
 
 
     @GetMapping
-    public List<Estado> listar(){
+    public List<Cidade> listar() {
 
         return service.listar();
 
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Estado> buscar(@PathVariable Long id){
+    public ResponseEntity<Cidade> buscar(@PathVariable Long id) {
 
-        var estado = service.buscar(id);
+        var cidade = service.buscar(id);
 
-        if(Objects.nonNull(estado)){
+        if(Objects.nonNull(cidade)){
 
-            return ResponseEntity.ok(estado);
+            return ResponseEntity.ok(cidade);
 
         }
 
             return ResponseEntity.notFound().build();
+
     }
 
-    @PostMapping
-    @ResponseStatus(HttpStatus.CREATED)
-    public Estado adicionar(@RequestBody Estado estado){
 
-        return service.salvar(estado);
+    @PostMapping
+    public ResponseEntity<?> adicionar(@RequestBody Cidade cidade){
+
+        try {
+
+           var ciadeSalva = service.salvar(cidade);
+
+            return ResponseEntity.status(HttpStatus.CREATED).body(ciadeSalva);
+
+        }catch (EntidadeNaoEncontradaException ex) {
+
+            return ResponseEntity.badRequest().body(ex.getMessage());
+
+        }
 
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Estado> atualizar(@PathVariable Long id,
-                                            @RequestBody Estado estado){
+    public ResponseEntity<?> atualizar(@PathVariable Long id,
+                                            @RequestBody Cidade cidade) {
 
-        var estadoBuscado = service.buscar(id);
+        var cidadeBuscada = service.buscar(id);
 
-        if(Objects.nonNull(estadoBuscado)){
+        try {
 
-            BeanUtils.copyProperties(estado, estadoBuscado, "id");
+            if(Objects.nonNull(cidadeBuscada)){
 
-            var estadoAtualizado = service.salvar(estadoBuscado);
+                BeanUtils.copyProperties(cidade, cidadeBuscada, "id");
 
-            return ResponseEntity.ok(estadoAtualizado);
+                cidadeBuscada = service.salvar(cidadeBuscada);
+
+                return ResponseEntity.ok(cidadeBuscada);
+
+            }
+            return ResponseEntity.notFound().build();
+
+        }catch (EntidadeNaoEncontradaException ex){
+
+            return ResponseEntity.badRequest().body(ex.getMessage());
 
         }
-
-            return ResponseEntity.notFound().build();
 
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> remover(@PathVariable Long id){
+    public ResponseEntity<?> deletar(@PathVariable Long id){
 
         try {
+
             service.excluir(id);
 
             return ResponseEntity.noContent().build();
@@ -98,10 +116,6 @@ public class EstadoController {
 
         }
 
-
-
     }
 
-
-
-}
+    }
