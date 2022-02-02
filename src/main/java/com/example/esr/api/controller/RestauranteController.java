@@ -7,14 +7,15 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 @RestController
@@ -91,6 +92,25 @@ public class RestauranteController {
 
         }
     }
+
+
+    @PatchMapping("/{id}")
+    public ResponseEntity<?> atualizarParcial(@PathVariable Long id,
+                                              @RequestBody Map<String, Object> campos) {
+
+        Restaurante restauranteAtual = service.buscar(id);
+
+        if(Objects.isNull(restauranteAtual)){
+            ResponseEntity.notFound();
+        }
+
+        // faz o merge dos valores que veio no mapa para o restaurante buscado
+        service.merge(campos, restauranteAtual);
+
+        return this.atualizar(id,restauranteAtual);
+
+    }
+
 
 
 }

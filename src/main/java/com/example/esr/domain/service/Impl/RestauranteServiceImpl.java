@@ -5,9 +5,12 @@ import com.example.esr.domain.model.Restaurante;
 import com.example.esr.domain.repository.CozinhaRepository;
 import com.example.esr.domain.repository.RestauranteRepository;
 import com.example.esr.domain.service.RestauranteService;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.stereotype.Service;
+import org.springframework.util.ReflectionUtils;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 @Service
@@ -64,5 +67,33 @@ public class RestauranteServiceImpl implements RestauranteService {
         restaurante.setCozinha(cozinha);
 
         return restauranteRepository.salvar(restaurante);
+    }
+
+    @Override
+    public void merge(Map<String, Object> camposOrigem, Restaurante restauranteDestino) {
+
+        ObjectMapper objectMapper = new ObjectMapper();
+
+        //Converte o Json para Java
+        Restaurante restauranteOrigem = objectMapper.convertValue(camposOrigem, Restaurante.class);
+
+        camposOrigem.forEach((k, v) -> {
+
+            //pega somente os campos de restaurante que veio na chave do mapa
+            var field = ReflectionUtils.findField(Restaurante.class, k);
+
+            //torna as variaveis de instancia acessivel
+            field.setAccessible(true);
+
+            // busca o valor do campo (field)
+            var novoValor = ReflectionUtils.getField(field, restauranteOrigem);
+
+            //System.out.println(k +" = "+ v + " = " + novoValor);
+
+            // seta o valor dos campos(field) no restaurante de destino
+            ReflectionUtils.setField(field, restauranteDestino, novoValor);
+
+        });
+
     }
 }

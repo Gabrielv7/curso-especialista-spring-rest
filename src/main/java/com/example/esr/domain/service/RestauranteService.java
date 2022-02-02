@@ -4,6 +4,7 @@ import com.example.esr.domain.model.Restaurante;
 import com.example.esr.domain.exception.EntidadeNaoEncontradaException;
 
 import java.util.List;
+import java.util.Map;
 
 public interface RestauranteService {
 
@@ -26,5 +27,12 @@ public interface RestauranteService {
      * @return Restaurante Salvo
      */
     Restaurante salvar(Restaurante restaurante);
+
+    /**
+     * Faz a atualização parcial de um restaurante
+     * @param camposOrigem Campos que veio no parametro para a atualização
+     * @param restauranteDestino Restaurante que vai ser atualizado
+     */
+    void merge(Map<String, Object> camposOrigem, Restaurante restauranteDestino);
 
 }
