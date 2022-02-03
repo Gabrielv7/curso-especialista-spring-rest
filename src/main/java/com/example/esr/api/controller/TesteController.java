@@ -60,7 +60,7 @@ public class TesteController {
     public List<Restaurante> restaurantesPorNome(@RequestParam("nome") String nome,
                                                  @RequestParam("cozinhaId")Long id) {
 
-        return restauranteRepository.findByNomeContainingAndCozinhaId(nome, id);
+        return restauranteRepository.consultarPorNome(nome, id);
 
     }
 
