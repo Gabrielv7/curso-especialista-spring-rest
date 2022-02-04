@@ -6,6 +6,7 @@ import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.criteria.CriteriaBuilder;
 import java.math.BigDecimal;
 import java.util.List;
 
@@ -17,13 +18,15 @@ public class RestauranteRepositoryImpl implements RestauranteRepositoryQueries {
 
     public List<Restaurante> find(String nome, BigDecimal taxaFreteInicial, BigDecimal taxaFreteFinal){
 
-        var jpql = "from Restaurante where nome like :nome and taxaFrete between :taxaInicial and :taxaFinal";
+        CriteriaBuilder builder = manager.getCriteriaBuilder();
 
-        return manager.createQuery(jpql, Restaurante.class)
-                .setParameter("nome", "%" + nome + "%")
-                .setParameter("taxaInicial", taxaFreteInicial)
-                .setParameter("taxaFinal", taxaFreteFinal)
-                .getResultList();
+        var criteria = builder.createQuery(Restaurante.class);
+
+        criteria.from(Restaurante.class);
+
+
+       return manager.createQuery(criteria)
+               .getResultList();
 
     }
 
