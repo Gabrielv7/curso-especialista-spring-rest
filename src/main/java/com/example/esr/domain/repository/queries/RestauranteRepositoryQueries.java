@@ -7,6 +7,6 @@ import java.util.List;
 // Interface para Queries customizadas
 public interface RestauranteRepositoryQueries {
 
-    List<Restaurante> find(String nome, BigDecimal taxaFreteInicial, BigDecimal taxaFreteFinal);
+    List<Restaurante> find(String nome, BigDecimal taxaInicial, BigDecimal taxaFinal);
 
 }

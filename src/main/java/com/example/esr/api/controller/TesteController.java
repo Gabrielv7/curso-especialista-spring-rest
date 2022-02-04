@@ -85,10 +85,10 @@ public class TesteController {
 
     }
 
-    @GetMapping("/restaurantes/por-nome-frete")
-    public List<Restaurante> restaurantesPorNomeFrete(@RequestParam("nome") String nome,
-                                                      @RequestParam("taxaInicial") BigDecimal taxaInicial,
-                                                      @RequestParam("taxaFinal")BigDecimal taxaFinal) {
+    @GetMapping("/restaurantes/por-nome-frete")    // required = false - Quando o parametro não é óbrigatório para a consulta)
+    public List<Restaurante> restaurantesPorNomeFrete(@RequestParam(value = "nome", required = false) String nome,
+                                                      @RequestParam(value = "taxaInicial", required = false) BigDecimal taxaInicial,
+                                                      @RequestParam(value = "taxaFinal", required = false)BigDecimal taxaFinal) {
 
         return restauranteRepository.find(nome, taxaInicial, taxaFinal);
 
