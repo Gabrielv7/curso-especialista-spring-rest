@@ -4,8 +4,7 @@ import com.example.esr.domain.model.Cozinha;
 import com.example.esr.domain.model.Restaurante;
 import com.example.esr.domain.repository.CozinhaRepository;
 import com.example.esr.domain.repository.RestauranteRepository;
-import com.example.esr.infrastructure.spec.RestauranteComFreteGratisSpec;
-import com.example.esr.infrastructure.spec.RestauranteComNomeSemelhanteSpec;
+import com.example.esr.infrastructure.spec.RestauranteSpecs;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -99,11 +98,8 @@ public class TesteController {
     @GetMapping("/restaurantes/com-frete-gratis")
     public List<Restaurante> restaurantesComFreteGratis(@RequestParam(value = "nome") String nome) {
 
-        var comFreteGratis = new RestauranteComFreteGratisSpec();
-
-        var comNomeSemelhante = new RestauranteComNomeSemelhanteSpec(nome);
-
-        return restauranteRepository.findAll(comFreteGratis.and(comNomeSemelhante));
+        return restauranteRepository.findAll(RestauranteSpecs.comFreteGratis()
+                                                .and(RestauranteSpecs.comNomeSemelhante(nome)));
 
     }
 
