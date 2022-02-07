@@ -11,8 +11,11 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import java.math.BigDecimal;
+import java.util.List;
 
 @Getter
 @Setter
@@ -35,4 +38,10 @@ public class Restaurante {
     @ManyToOne
     @JoinColumn(nullable = false)
     private Cozinha cozinha;
+
+    @ManyToMany
+    @JoinTable(name = "restaurante_forma_pagamento",
+    joinColumns = @JoinColumn(name = "restaurante_id"),
+    inverseJoinColumns = @JoinColumn(name = "forma_pagamento_id"))
+    private List<FormaPagamento> formasPagamento;
 }
