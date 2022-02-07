@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.Column;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -37,6 +38,9 @@ public class Restaurante {
     @ManyToOne
     @JoinColumn(nullable = false)
     private Cozinha cozinha;
+
+    @Embedded
+    private Endereco endereco;
 
     @JsonIgnore
     @ManyToMany
