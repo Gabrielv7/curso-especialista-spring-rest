@@ -1,5 +1,6 @@
 package com.example.esr.domain.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
@@ -30,6 +31,7 @@ public class Restaurante {
     @Column(nullable = false)
     private BigDecimal taxaFrete;
 
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(nullable = false)
     private Cozinha cozinha;
