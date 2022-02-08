@@ -15,6 +15,10 @@ import java.util.Optional;
 public interface RestauranteRepository extends JpaRepository<Restaurante, Long>, RestauranteRepositoryQueries,
                                                 JpaSpecificationExecutor<Restaurante> {
 
+   // 6.14. Resolvendo o Problema do N+1 com fetch join na JPQL
+    @Query("select distinct r from Restaurante r join fetch r.cozinha left join fetch r.formasPagamento")
+    List<Restaurante> findAll();
+
     List<Restaurante> findByTaxaFreteBetween(BigDecimal taxaInicial, BigDecimal taxaFinal);
 
     @Query("from Restaurante where nome like %:nome% and cozinha.id = :id")

@@ -31,12 +31,7 @@ public class RestauranteController {
     @GetMapping
     public List<Restaurante> listar() {
 
-        var restaurantes = service.listar();
-
-//		System.out.println("O nome da cozinha é:");
-//		restaurantes.get(0).getCozinha().getNome();
-
-        return restaurantes;
+        return service.listar();
 
     }
 
