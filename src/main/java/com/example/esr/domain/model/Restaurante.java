@@ -10,6 +10,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -39,7 +40,9 @@ public class Restaurante {
     @Column(nullable = false)
     private BigDecimal taxaFrete;
 
-    @ManyToOne
+    //	@JsonIgnoreProperties("hibernateLazyInitializer")
+    @JsonIgnore
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(nullable = false)
     private Cozinha cozinha;
 
