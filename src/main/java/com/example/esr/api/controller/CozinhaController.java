@@ -1,5 +1,6 @@
 package com.example.esr.api.controller;
 
+import com.example.esr.domain.exception.EntidadeNaoEncontradaException;
 import com.example.esr.domain.model.Cozinha;
 import com.example.esr.domain.service.CozinhaService;
 import org.springframework.beans.BeanUtils;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 import java.util.Objects;
@@ -103,7 +105,15 @@ public class CozinhaController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void remover(@PathVariable Long id){
 
+    try {
+
         service.excluir(id);
+
+    }catch (EntidadeNaoEncontradaException ex ){
+
+        throw new ResponseStatusException(HttpStatus.NOT_FOUND, ex.getMessage());
+
+    }
 
     }
 

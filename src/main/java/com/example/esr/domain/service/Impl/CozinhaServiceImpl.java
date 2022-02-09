@@ -7,7 +7,9 @@ import com.example.esr.domain.repository.CozinhaRepository;
 import com.example.esr.domain.service.CozinhaService;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
