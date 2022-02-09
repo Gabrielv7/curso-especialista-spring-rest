@@ -7,14 +7,16 @@ import com.example.esr.domain.repository.CozinhaRepository;
 import com.example.esr.domain.service.CozinhaService;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class CozinhaServiceImpl implements CozinhaService {
+
+    public static final String MSG_COZINHA_NAO_ENCONTRADA = "Não existe um cadastro de cozinha com o código %d.";
+    public static final String MSG_COZINHA_EM_USO = "Cozinha de código %d não poder ser removida, pois está em uso";
 
     private final CozinhaRepository cozinhaRepository;
 
@@ -37,9 +39,9 @@ public class CozinhaServiceImpl implements CozinhaService {
     }
 
     @Override
-    public Cozinha buscar(Long id) {
+    public Optional<Cozinha> buscar(Long id) {
 
-        return cozinhaRepository.findById(id).orElse(null);
+        return cozinhaRepository.findById(id);
 
     }
 
@@ -53,16 +55,26 @@ public class CozinhaServiceImpl implements CozinhaService {
         }catch (EmptyResultDataAccessException ex){
 
             throw new EntidadeNaoEncontradaException(
-                    String.format("Não existe um cadastro de cozinha com o código %d.", id)
+                    String.format(MSG_COZINHA_NAO_ENCONTRADA, id)
             );
 
         } catch (DataIntegrityViolationException ex){
 
             throw new EntidadeEmUsoException(
-                    String.format("Cozinha de código %d não poder ser removida, pois está em uso", id)
+                    String.format(MSG_COZINHA_EM_USO, id)
             );
 
         }
+
+    }
+
+    @Override
+    public Cozinha buscarOuFalhar(Long id) {
+
+        return cozinhaRepository.findById(id)
+                .orElseThrow(()-> new EntidadeNaoEncontradaException(
+                        String.format(MSG_COZINHA_NAO_ENCONTRADA, id)
+                ));
 
     }
 }

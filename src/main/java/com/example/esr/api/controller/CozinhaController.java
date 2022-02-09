@@ -1,11 +1,9 @@
 package com.example.esr.api.controller;
 
-import com.example.esr.domain.exception.EntidadeNaoEncontradaException;
 import com.example.esr.domain.model.Cozinha;
 import com.example.esr.domain.service.CozinhaService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -15,10 +13,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
-import java.util.Objects;
 
 @RestController
 @RequestMapping("/cozinhas")
@@ -38,17 +34,10 @@ public class CozinhaController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Cozinha> buscar (@PathVariable Long id){
+    @ResponseStatus(HttpStatus.OK)
+    public Cozinha buscar (@PathVariable Long id){
 
-        var cozinha = service.buscar(id);
-
-        if(Objects.nonNull(cozinha)){
-
-            return ResponseEntity.ok(cozinha);
-
-        }
-
-        return  ResponseEntity.notFound().build();
+        return service.buscarOuFalhar(id);
 
     }
 
@@ -61,45 +50,17 @@ public class CozinhaController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Cozinha> atualizar(@PathVariable Long id,
-                                             @RequestBody Cozinha cozinha){
+    @ResponseStatus(HttpStatus.OK)
+    public Cozinha atualizar(@PathVariable Long id,
+                             @RequestBody Cozinha cozinha){
 
-        var cozinhaAtual = service.buscar(id);
+        var cozinhaAtual = service.buscarOuFalhar(id);
 
-        if(Objects.nonNull(cozinhaAtual)) {
+        BeanUtils.copyProperties(cozinha, cozinhaAtual, "id");
 
-            BeanUtils.copyProperties(cozinha, cozinhaAtual, "id");
-
-            cozinhaAtual = service.salvar(cozinhaAtual);
-
-            return ResponseEntity.ok(cozinhaAtual);
-        }
-
-            return ResponseEntity.notFound().build();
+        return service.salvar(cozinhaAtual);
 
     }
-
-    /*
-    @DeleteMapping("/{id}")
-    public ResponseEntity<?> remover(@PathVariable Long id){
-
-        try {
-
-            service.excluir(id);
-
-            return ResponseEntity.noContent().build();
-
-        }catch (EntidadeNaoEncontradaException ex) {
-
-           return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
-
-        } catch (EntidadeEmUsoException ex){
-
-            return ResponseEntity.status(HttpStatus.CONFLICT).body(ex.getMessage());
-        }
-
-    }
-     */
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
