@@ -1,3 +1,31 @@
+
+set foreign_key_checks = 0;
+
+delete from cidade;
+delete from cozinha;
+delete from estado;
+delete from forma_pagamento;
+delete from grupo_permissao;
+delete from grupo;
+delete from permissao;
+delete from produto;
+delete from restaurante;
+delete from restaurante_forma_pagamento;
+delete from usuario;
+delete from usuario_grupo;
+
+set foreign_key_checks = 1;
+
+alter table cidade auto_increment = 1;
+alter table cozinha auto_increment = 1;
+alter table estado auto_increment = 1;
+alter table forma_pagamento auto_increment = 1;
+alter table grupo auto_increment = 1;
+alter table permissao auto_increment = 1;
+alter table produto auto_increment = 1;
+alter table restaurante auto_increment = 1;
+alter table usuario auto_increment = 1;
+
 insert into cozinha (id, nome) values (1, 'Tailandesa');
 insert into cozinha (id, nome) values (2, 'Indiana');
 insert into cozinha (id, nome) values (3, 'Argentina');
@@ -38,3 +66,8 @@ insert into produto (id, nome, descricao, preco, ativo, restaurante_id) values (
 insert into produto (id, nome, descricao, preco, ativo, restaurante_id) values (7, 'T-Bone', 'Corte muito saboroso, com um osso em formato de T, sendo de um lado o contrafilé e do outro o filé mignon', 89, 1, 4);
 insert into produto (id, nome, descricao, preco, ativo, restaurante_id) values (8, 'Sanduíche X-Tudo', 'Sandubão com muito queijo, hamburger bovino, bacon, ovo, salada e maionese', 19, 1, 5);
 insert into produto (id, nome, descricao, preco, ativo, restaurante_id) values (9, 'Espetinho de Cupim', 'Acompanha farinha, mandioca e vinagrete', 8, 1, 6);
+
+
+
+
+
