@@ -1,7 +1,5 @@
 package com.example.esr.api.controller;
 
-import com.example.esr.domain.exception.EntidadeEmUsoException;
-import com.example.esr.domain.exception.EntidadeNaoEncontradaException;
 import com.example.esr.domain.model.Cozinha;
 import com.example.esr.domain.service.CozinhaService;
 import org.springframework.beans.BeanUtils;
@@ -79,8 +77,9 @@ public class CozinhaController {
 
     }
 
+    /*
     @DeleteMapping("/{id}")
-    public ResponseEntity<Cozinha> remover(@PathVariable Long id){
+    public ResponseEntity<?> remover(@PathVariable Long id){
 
         try {
 
@@ -90,13 +89,21 @@ public class CozinhaController {
 
         }catch (EntidadeNaoEncontradaException ex) {
 
-            return ResponseEntity.notFound().build();
+           return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
 
         } catch (EntidadeEmUsoException ex){
 
-            return ResponseEntity.status(HttpStatus.CONFLICT).build();
-
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(ex.getMessage());
         }
+
+    }
+     */
+
+    @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void remover(@PathVariable Long id){
+
+        service.excluir(id);
 
     }
 
