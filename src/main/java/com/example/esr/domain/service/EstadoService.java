@@ -14,13 +14,6 @@ public interface EstadoService {
     List<Estado> listar();
 
     /**
-     *
-     * @param id Identificador do estado
-     * @return Estado
-     */
-    Estado buscar(Long id);
-
-    /**
      * Adiciona um estado no banco de dados
      * @param estado
      * @return Estado salvo
@@ -35,5 +28,12 @@ public interface EstadoService {
      * @throws EntidadeEmUsoException
      */
     void excluir(Long id);
+
+    /**
+     * Busca um estado pelo ID, caso ele não exista lança uma exceção
+     * @param id Identificador do Estado
+     * @throws EntidadeNaoEncontradaException
+     */
+    Estado buscarOuFalhar(Long id);
 
 }

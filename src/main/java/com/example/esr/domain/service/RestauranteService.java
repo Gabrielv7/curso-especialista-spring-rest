@@ -13,12 +13,6 @@ public interface RestauranteService {
      */
     List<Restaurante> listar();
 
-    /**
-     * Busca um restaurante
-     * @param id Identificador do restaurante
-     * @return Restaurante
-     */
-    Restaurante buscar(Long id);
 
     /**
      * Adiciona um restaurante no banco de dados
@@ -34,5 +28,12 @@ public interface RestauranteService {
      * @param restauranteDestino Restaurante que vai ser atualizado
      */
     void merge(Map<String, Object> camposOrigem, Restaurante restauranteDestino);
+
+    /**
+     * Busca um restaurante pelo ID, caso ele não exista lança uma exceção
+     * @param id Identificador do Restaurante
+     * @throws EntidadeNaoEncontradaException
+     */
+    Restaurante buscarOuFalhar(Long id);
 
 }

@@ -14,13 +14,6 @@ public interface CidadeService {
     List<Cidade> listar();
 
     /**
-     * Busca uma cidade
-     * @param id Identificador da cidade
-     * @return Cidade
-     */
-    Cidade buscar(Long id);
-
-    /**
      * Adiciona uma cidade no banco de dados
      * @param cidade
      * @throws EntidadeNaoEncontradaException
@@ -35,6 +28,13 @@ public interface CidadeService {
      * @throws EntidadeEmUsoException
      */
     void excluir(Long id);
+
+    /**
+     * Busca uma Cidade pelo ID, caso ela não exista lança uma exceção
+     * @param id Identificador do Estado
+     * @throws EntidadeNaoEncontradaException
+     */
+    Cidade buscarOuFalhar(Long id);
 
 
 }

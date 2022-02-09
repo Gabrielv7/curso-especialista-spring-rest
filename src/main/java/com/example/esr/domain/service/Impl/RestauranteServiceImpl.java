@@ -2,8 +2,8 @@ package com.example.esr.domain.service.Impl;
 
 import com.example.esr.domain.exception.EntidadeNaoEncontradaException;
 import com.example.esr.domain.model.Restaurante;
-import com.example.esr.domain.repository.CozinhaRepository;
 import com.example.esr.domain.repository.RestauranteRepository;
+import com.example.esr.domain.service.CozinhaService;
 import com.example.esr.domain.service.RestauranteService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.stereotype.Service;
@@ -15,12 +15,14 @@ import java.util.Map;
 @Service
 public class RestauranteServiceImpl implements RestauranteService {
 
-    private final RestauranteRepository restauranteRepository;
-    private final CozinhaRepository cozinhaRepository;
+    public static final String MSG_RESTAURANTE_NAO_ENCONTRADO = "Não existe cadastro de restaurante com o código %d.";
 
-    public RestauranteServiceImpl(RestauranteRepository restauranteRepository, CozinhaRepository cozinhaRepository) {
+    private final RestauranteRepository restauranteRepository;
+    private final CozinhaService cozinhaService;
+
+    public RestauranteServiceImpl(RestauranteRepository restauranteRepository, CozinhaService cozinhaService) {
         this.restauranteRepository = restauranteRepository;
-        this.cozinhaRepository = cozinhaRepository;
+        this.cozinhaService = cozinhaService;
     }
 
     @Override
@@ -30,11 +32,6 @@ public class RestauranteServiceImpl implements RestauranteService {
 
     }
 
-    @Override
-    public Restaurante buscar(Long id) {
-
-       return restauranteRepository.findById(id).orElse(null);
-    }
 
     @Override
     public Restaurante salvar(Restaurante restaurante) {
@@ -43,10 +40,7 @@ public class RestauranteServiceImpl implements RestauranteService {
         long cozinhaId  = restaurante.getCozinha().getId();
 
         // busca a cozinha pelo ID, se a cozinha não existir lança a exeção EntidadeNaoEncontradaException
-        var cozinha = cozinhaRepository.findById(cozinhaId)
-                             .orElseThrow(()-> new EntidadeNaoEncontradaException(
-                                     String.format("Não existe cadastro de cozinha com o código %d.", cozinhaId)
-                             ));
+        var cozinha = cozinhaService.buscarOuFalhar(cozinhaId);
 
         // Se a cozinha existir ela é adicionada ao restaurante
         restaurante.setCozinha(cozinha);
@@ -79,6 +73,16 @@ public class RestauranteServiceImpl implements RestauranteService {
             ReflectionUtils.setField(field, restauranteDestino, novoValor);
 
         });
+
+    }
+
+    @Override
+    public Restaurante buscarOuFalhar(Long id) {
+
+        return restauranteRepository.findById(id)
+                .orElseThrow(()-> new EntidadeNaoEncontradaException(
+                        String.format(MSG_RESTAURANTE_NAO_ENCONTRADO, id)
+                ));
 
     }
 }

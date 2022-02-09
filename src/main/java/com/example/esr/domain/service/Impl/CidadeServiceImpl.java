@@ -4,8 +4,8 @@ import com.example.esr.domain.exception.EntidadeEmUsoException;
 import com.example.esr.domain.exception.EntidadeNaoEncontradaException;
 import com.example.esr.domain.model.Cidade;
 import com.example.esr.domain.repository.CidadeRepository;
-import com.example.esr.domain.repository.EstadoRepository;
 import com.example.esr.domain.service.CidadeService;
+import com.example.esr.domain.service.EstadoService;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
@@ -15,12 +15,15 @@ import java.util.List;
 @Service
 public class CidadeServiceImpl implements CidadeService {
 
-    private final CidadeRepository cidadeRepository;
-    private final EstadoRepository estadoRepository;
+    public static final String MSG_CIDADE_NAO_ENCONTRADA = "Não existe cadastro de cidade com o código %d.";
+    public static final String MSG_CIDADE_EM_USO = "Cidade de código %d não pode ser excluida, pois está em uso";
 
-    public CidadeServiceImpl(CidadeRepository cidadeRepository, EstadoRepository estadoRepository) {
+    private final CidadeRepository cidadeRepository;
+    private final EstadoService estadoService;
+
+    public CidadeServiceImpl(CidadeRepository cidadeRepository, EstadoService estadoService) {
         this.cidadeRepository = cidadeRepository;
-        this.estadoRepository = estadoRepository;
+        this.estadoService = estadoService;
     }
 
     @Override
@@ -31,23 +34,13 @@ public class CidadeServiceImpl implements CidadeService {
     }
 
     @Override
-    public Cidade buscar(Long id) {
-
-        return cidadeRepository.findById(id).orElse(null);
-
-    }
-
-    @Override
     public Cidade salvar(Cidade cidade) {
 
         // pega o ID do estado
         long idEstado = cidade.getEstado().getId();
 
         // busca o estado pelo ID se o estado não existir lança a exeção EntidadeNaoEncontradaException
-        var estado = estadoRepository.findById(idEstado)
-                            .orElseThrow(()-> new EntidadeNaoEncontradaException(
-                                 String.format("Não existe cadastro de estado com o código %d.", idEstado)
-                            ));
+        var estado = estadoService.buscarOuFalhar(idEstado);
 
         // Se o estado existir ele é adicionado ao restaurante
         cidade.setEstado(estado);
@@ -66,18 +59,27 @@ public class CidadeServiceImpl implements CidadeService {
         }catch (EmptyResultDataAccessException ex){
 
             throw new EntidadeNaoEncontradaException(
-                    String.format("Não existe cadastro de cidade com o código %d.", id)
+                    String.format(MSG_CIDADE_NAO_ENCONTRADA, id)
             );
 
         }catch (DataIntegrityViolationException ex){
 
             throw new EntidadeEmUsoException(
-                    String.format("Cidade de código %d não pode ser excluida, pois está em uso", id)
+                    String.format(MSG_CIDADE_EM_USO, id)
 
             );
 
         }
 
+    }
+
+    @Override
+    public Cidade buscarOuFalhar(Long id) {
+
+        return cidadeRepository.findById(id)
+                .orElseThrow(()-> new EntidadeNaoEncontradaException(
+                        String.format(MSG_CIDADE_NAO_ENCONTRADA, id)
+                ));
 
     }
 }

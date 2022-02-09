@@ -5,7 +5,6 @@ import com.example.esr.domain.exception.EntidadeEmUsoException;
 import com.example.esr.domain.exception.EntidadeNaoEncontradaException;
 
 import java.util.List;
-import java.util.Optional;
 
 public interface CozinhaService {
 
@@ -21,12 +20,6 @@ public interface CozinhaService {
      */
     List<Cozinha> listar();
 
-    /**
-     * Busca uma cozinha
-     * @param id Identificador da cozinha
-     * @return Cozinha
-     */
-    Optional<Cozinha> buscar(Long id);
 
     /**
      * Deleta uma cozinha do banco de dados
@@ -37,7 +30,7 @@ public interface CozinhaService {
      void excluir(Long id);
 
     /**
-     * Busca uma cozinha, caso ela não exista lança uma exceção
+     * Busca uma cozinha pelo ID, caso ela não exista lança uma exceção
      * @param id Identificador da cozinha
      * @throws EntidadeNaoEncontradaException
      */

@@ -10,7 +10,6 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class CozinhaServiceImpl implements CozinhaService {
@@ -35,13 +34,6 @@ public class CozinhaServiceImpl implements CozinhaService {
     public List<Cozinha> listar() {
 
         return cozinhaRepository.findAll();
-
-    }
-
-    @Override
-    public Optional<Cozinha> buscar(Long id) {
-
-        return cozinhaRepository.findById(id);
 
     }
 

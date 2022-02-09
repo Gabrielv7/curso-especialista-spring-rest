@@ -14,6 +14,9 @@ import java.util.List;
 @Service
 public class EstadoServiceImpl implements EstadoService {
 
+    public static final String MSG_ESTADO_NAO_ENCONTRADO = "Não existe cadastro de estado com o código %d.";
+    public static final String MSG_ESTADO_EM_USO = "Estado de código %d não pode ser removido, pois está em uso.";
+
     private final EstadoRepository estadoRepository;
 
     public EstadoServiceImpl(EstadoRepository estadoRepository){
@@ -27,12 +30,6 @@ public class EstadoServiceImpl implements EstadoService {
 
         return estadoRepository.findAll();
 
-    }
-
-    @Override
-    public Estado buscar(Long id) {
-
-        return estadoRepository.findById(id).orElse(null);
     }
 
     @Override
@@ -52,16 +49,26 @@ public class EstadoServiceImpl implements EstadoService {
         }catch (EmptyResultDataAccessException ex){
 
             throw new EntidadeNaoEncontradaException(
-                  String.format("Não existe cadastro de estado com o código %d.", id)
+                  String.format(MSG_ESTADO_NAO_ENCONTRADO, id)
             );
 
         } catch (DataIntegrityViolationException ex){
 
             throw new EntidadeEmUsoException(
-                    String.format("Estado de código %d não pode ser removido, pois está em uso.", id)
+                    String.format(MSG_ESTADO_EM_USO, id)
             );
         }
 
+
+    }
+
+    @Override
+    public Estado buscarOuFalhar(Long id) {
+
+        return estadoRepository.findById(id)
+                .orElseThrow(() -> new EntidadeNaoEncontradaException(
+                        String.format(MSG_ESTADO_NAO_ENCONTRADO, id))
+                );
 
     }
 
