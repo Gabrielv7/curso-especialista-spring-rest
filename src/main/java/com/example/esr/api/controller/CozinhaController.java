@@ -105,15 +105,7 @@ public class CozinhaController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void remover(@PathVariable Long id){
 
-    try {
-
         service.excluir(id);
-
-    }catch (EntidadeNaoEncontradaException ex ){
-
-        throw new ResponseStatusException(HttpStatus.NOT_FOUND, ex.getMessage());
-
-    }
 
     }
 
