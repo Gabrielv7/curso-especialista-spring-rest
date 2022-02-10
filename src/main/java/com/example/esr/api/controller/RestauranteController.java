@@ -1,10 +1,11 @@
 package com.example.esr.api.controller;
 
+import com.example.esr.domain.exception.EntidadeNaoEncontradaException;
+import com.example.esr.domain.exception.NegocioException;
 import com.example.esr.domain.model.Restaurante;
 import com.example.esr.domain.service.RestauranteService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -18,7 +19,6 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 @RestController
@@ -53,7 +53,11 @@ public class RestauranteController {
     @ResponseStatus(HttpStatus.CREATED)
     public Restaurante adicionar(@RequestBody Restaurante restaurante){
 
-        return service.salvar(restaurante);
+        try {
+            return service.salvar(restaurante);
+        }catch (EntidadeNaoEncontradaException ex){
+            throw new NegocioException(ex.getMessage());
+        }
 
     }
 
@@ -68,20 +72,20 @@ public class RestauranteController {
         BeanUtils.copyProperties(restaurante, restauranteAtual, "id", "formasPagamento",
                                         "endereco", "dataCadastro", "produtos");
 
-        return service.salvar(restauranteAtual);
+        try {
+            return service.salvar(restaurante);
+        }catch (EntidadeNaoEncontradaException ex){
+            throw new NegocioException(ex.getMessage());
+        }
 
     }
 
 
     @PatchMapping("/{id}")
     public Restaurante atualizarParcial(@PathVariable Long id,
-                                              @RequestBody Map<String, Object> campos) {
+                                        @RequestBody Map<String, Object> campos) {
 
         Restaurante restauranteAtual = service.buscarOuFalhar(id);
-
-        if(Objects.isNull(restauranteAtual)){
-            ResponseEntity.notFound();
-        }
 
         // faz o merge dos valores que veio no mapa para o restaurante buscado
         service.merge(campos, restauranteAtual);
