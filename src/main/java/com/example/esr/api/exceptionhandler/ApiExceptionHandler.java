@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
+import java.time.LocalDateTime;
 import java.util.Objects;
 
 @ControllerAdvice
@@ -72,6 +73,7 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
                 .status(status.value())
                 .type(problemType.getUri())
                 .title(problemType.getTitulo())
+                .dateTime(LocalDateTime.now())
                 .detail(detail);
 
     }
