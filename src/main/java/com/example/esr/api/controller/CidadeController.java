@@ -1,5 +1,7 @@
 package com.example.esr.api.controller;
 
+import com.example.esr.domain.exception.EntidadeNaoEncontradaException;
+import com.example.esr.domain.exception.NegocioException;
 import com.example.esr.domain.model.Cidade;
 import com.example.esr.domain.service.CidadeService;
 import org.springframework.beans.BeanUtils;
@@ -47,7 +49,11 @@ public class CidadeController {
     @ResponseStatus(HttpStatus.CREATED)
     public Cidade adicionar(@RequestBody Cidade cidade){
 
-        return service.salvar(cidade);
+        try {
+            return service.salvar(cidade);
+        }catch (EntidadeNaoEncontradaException ex){
+            throw new NegocioException(ex.getMessage());
+        }
 
     }
 
@@ -60,7 +66,12 @@ public class CidadeController {
 
         BeanUtils.copyProperties(cidade, cidadeBuscada, "id");
 
-        return service.salvar(cidadeBuscada);
+        try {
+            return service.salvar(cidadeBuscada);
+        }catch (EntidadeNaoEncontradaException ex){
+            throw new NegocioException(ex.getMessage());
+        }
+
 
     }
 
