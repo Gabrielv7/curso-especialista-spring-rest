@@ -56,7 +56,7 @@ public class RestauranteController {
         try {
             return service.salvar(restaurante);
         }catch (CozinhaNaoEncontradaException ex){
-            throw new NegocioException(ex.getMessage());
+            throw new NegocioException(ex.getMessage(), ex);
         }
 
     }
@@ -76,7 +76,7 @@ public class RestauranteController {
         return service.salvar(restauranteAtual);
 
         }catch (CozinhaNaoEncontradaException ex){
-            throw new NegocioException(ex.getMessage());
+            throw new NegocioException(ex.getMessage(), ex);
         }
 
     }

@@ -1,12 +1,16 @@
 package com.example.esr.api.controller;
 
+import com.example.esr.api.exceptionhandler.Problem;
+import com.example.esr.domain.exception.EntidadeNaoEncontradaException;
 import com.example.esr.domain.exception.EstadoNaoEncontradoException;
 import com.example.esr.domain.exception.NegocioException;
 import com.example.esr.domain.model.Cidade;
 import com.example.esr.domain.service.CidadeService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -16,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
@@ -71,7 +76,7 @@ public class CidadeController {
             return service.salvar(cidadeBuscada);
 
         }catch (EstadoNaoEncontradoException ex){
-            throw new NegocioException(ex.getMessage());
+            throw new NegocioException(ex.getMessage(), ex);
         }
 
 
@@ -82,6 +87,32 @@ public class CidadeController {
     public void deletar(@PathVariable Long id){
 
         service.excluir(id);
+
+    }
+
+    @ExceptionHandler(EntidadeNaoEncontradaException.class)
+    public ResponseEntity<?> tratarEntidadeNaoEncontradaException(EntidadeNaoEncontradaException ex) {
+
+        var problem = Problem.builder().
+                dataHora(LocalDateTime.now())
+                .mensagem(ex.getMessage())
+                .build();
+
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(problem);
+
+    }
+
+    @ExceptionHandler(NegocioException.class)
+    public ResponseEntity<?> tratarNegocioException(NegocioException ex) {
+
+        var problem = Problem.builder().
+                dataHora(LocalDateTime.now())
+                .mensagem(ex.getMessage())
+                .build();
+
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(problem);
 
     }
 
