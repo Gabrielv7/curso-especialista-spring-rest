@@ -1,7 +1,7 @@
 package com.example.esr.domain.service.Impl;
 
 import com.example.esr.domain.exception.EntidadeEmUsoException;
-import com.example.esr.domain.exception.EntidadeNaoEncontradaException;
+import com.example.esr.domain.exception.CidadeNaoEncontradaException;
 import com.example.esr.domain.model.Cidade;
 import com.example.esr.domain.repository.CidadeRepository;
 import com.example.esr.domain.service.CidadeService;
@@ -14,8 +14,7 @@ import java.util.List;
 
 @Service
 public class CidadeServiceImpl implements CidadeService {
-
-    public static final String MSG_CIDADE_NAO_ENCONTRADA = "Não existe cadastro de cidade com o código %d.";
+    
     public static final String MSG_CIDADE_EM_USO = "Cidade de código %d não pode ser excluida, pois está em uso";
 
     private final CidadeRepository cidadeRepository;
@@ -39,7 +38,7 @@ public class CidadeServiceImpl implements CidadeService {
         // pega o ID do estado
         long idEstado = cidade.getEstado().getId();
 
-        // busca o estado pelo ID se o estado não existir lança a exeção EntidadeNaoEncontradaException
+        // busca o estado pelo ID se o estado não existir lança a exeção EstadoNaoEncontradoException
         var estado = estadoService.buscarOuFalhar(idEstado);
 
         // Se o estado existir ele é adicionado ao restaurante
@@ -58,9 +57,7 @@ public class CidadeServiceImpl implements CidadeService {
 
         }catch (EmptyResultDataAccessException ex){
 
-            throw new EntidadeNaoEncontradaException(
-                    String.format(MSG_CIDADE_NAO_ENCONTRADA, id)
-            );
+            throw new CidadeNaoEncontradaException(id);
 
         }catch (DataIntegrityViolationException ex){
 
@@ -77,9 +74,7 @@ public class CidadeServiceImpl implements CidadeService {
     public Cidade buscarOuFalhar(Long id) {
 
         return cidadeRepository.findById(id)
-                .orElseThrow(()-> new EntidadeNaoEncontradaException(
-                        String.format(MSG_CIDADE_NAO_ENCONTRADA, id)
-                ));
+                .orElseThrow(()-> new CidadeNaoEncontradaException(id));
 
     }
 }

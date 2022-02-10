@@ -1,6 +1,6 @@
 package com.example.esr.api.controller;
 
-import com.example.esr.domain.exception.EntidadeNaoEncontradaException;
+import com.example.esr.domain.exception.CozinhaNaoEncontradaException;
 import com.example.esr.domain.exception.NegocioException;
 import com.example.esr.domain.model.Restaurante;
 import com.example.esr.domain.service.RestauranteService;
@@ -55,7 +55,7 @@ public class RestauranteController {
 
         try {
             return service.salvar(restaurante);
-        }catch (EntidadeNaoEncontradaException ex){
+        }catch (CozinhaNaoEncontradaException ex){
             throw new NegocioException(ex.getMessage());
         }
 
@@ -66,15 +66,16 @@ public class RestauranteController {
     public Restaurante atualizar(@PathVariable Long id,
                                  @RequestBody Restaurante restaurante) {
 
+        try {
 
         Restaurante restauranteAtual = service.buscarOuFalhar(id);
 
         BeanUtils.copyProperties(restaurante, restauranteAtual, "id", "formasPagamento",
                                         "endereco", "dataCadastro", "produtos");
 
-        try {
-            return service.salvar(restaurante);
-        }catch (EntidadeNaoEncontradaException ex){
+        return service.salvar(restauranteAtual);
+
+        }catch (CozinhaNaoEncontradaException ex){
             throw new NegocioException(ex.getMessage());
         }
 

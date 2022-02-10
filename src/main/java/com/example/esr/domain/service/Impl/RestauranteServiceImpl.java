@@ -1,6 +1,6 @@
 package com.example.esr.domain.service.Impl;
 
-import com.example.esr.domain.exception.EntidadeNaoEncontradaException;
+import com.example.esr.domain.exception.RestauranteNaoEncontradoException;
 import com.example.esr.domain.model.Restaurante;
 import com.example.esr.domain.repository.RestauranteRepository;
 import com.example.esr.domain.service.CozinhaService;
@@ -14,8 +14,6 @@ import java.util.Map;
 
 @Service
 public class RestauranteServiceImpl implements RestauranteService {
-
-    public static final String MSG_RESTAURANTE_NAO_ENCONTRADO = "Não existe cadastro de restaurante com o código %d.";
 
     private final RestauranteRepository restauranteRepository;
     private final CozinhaService cozinhaService;
@@ -39,7 +37,7 @@ public class RestauranteServiceImpl implements RestauranteService {
         // Pega o ID da cozinha
         long cozinhaId  = restaurante.getCozinha().getId();
 
-        // busca a cozinha pelo ID, se a cozinha não existir lança a exeção EntidadeNaoEncontradaException
+        // busca a cozinha pelo ID, se a cozinha não existir lança a exeção CozinhaNaoEncontradaException
         var cozinha = cozinhaService.buscarOuFalhar(cozinhaId);
 
         // Se a cozinha existir ela é adicionada ao restaurante
@@ -80,9 +78,7 @@ public class RestauranteServiceImpl implements RestauranteService {
     public Restaurante buscarOuFalhar(Long id) {
 
         return restauranteRepository.findById(id)
-                .orElseThrow(()-> new EntidadeNaoEncontradaException(
-                        String.format(MSG_RESTAURANTE_NAO_ENCONTRADO, id)
-                ));
+                .orElseThrow(()-> new RestauranteNaoEncontradoException(id));
 
     }
 }

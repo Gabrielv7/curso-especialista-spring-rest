@@ -1,7 +1,7 @@
 package com.example.esr.domain.service.Impl;
 
+import com.example.esr.domain.exception.CozinhaNaoEncontradaException;
 import com.example.esr.domain.exception.EntidadeEmUsoException;
-import com.example.esr.domain.exception.EntidadeNaoEncontradaException;
 import com.example.esr.domain.model.Cozinha;
 import com.example.esr.domain.repository.CozinhaRepository;
 import com.example.esr.domain.service.CozinhaService;
@@ -14,7 +14,6 @@ import java.util.List;
 @Service
 public class CozinhaServiceImpl implements CozinhaService {
 
-    public static final String MSG_COZINHA_NAO_ENCONTRADA = "Não existe um cadastro de cozinha com o código %d.";
     public static final String MSG_COZINHA_EM_USO = "Cozinha de código %d não poder ser removida, pois está em uso";
 
     private final CozinhaRepository cozinhaRepository;
@@ -46,9 +45,7 @@ public class CozinhaServiceImpl implements CozinhaService {
 
         }catch (EmptyResultDataAccessException ex){
 
-            throw new EntidadeNaoEncontradaException(
-                    String.format(MSG_COZINHA_NAO_ENCONTRADA, id)
-            );
+            throw new CozinhaNaoEncontradaException(id);
 
         } catch (DataIntegrityViolationException ex){
 
@@ -64,9 +61,7 @@ public class CozinhaServiceImpl implements CozinhaService {
     public Cozinha buscarOuFalhar(Long id) {
 
         return cozinhaRepository.findById(id)
-                .orElseThrow(()-> new EntidadeNaoEncontradaException(
-                        String.format(MSG_COZINHA_NAO_ENCONTRADA, id)
-                ));
+                .orElseThrow(()-> new CozinhaNaoEncontradaException(id));
 
     }
 }
