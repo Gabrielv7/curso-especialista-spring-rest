@@ -1,6 +1,6 @@
 package com.example.esr.api.controller;
 
-import com.example.esr.domain.exception.EntidadeNaoEncontradaException;
+import com.example.esr.domain.exception.EstadoNaoEncontradoException;
 import com.example.esr.domain.exception.NegocioException;
 import com.example.esr.domain.model.Cidade;
 import com.example.esr.domain.service.CidadeService;
@@ -51,8 +51,8 @@ public class CidadeController {
 
         try {
             return service.salvar(cidade);
-        }catch (EntidadeNaoEncontradaException ex){
-            throw new NegocioException(ex.getMessage());
+        }catch (EstadoNaoEncontradoException ex){
+            throw new NegocioException(ex.getMessage(), ex);
         }
 
     }
@@ -62,13 +62,15 @@ public class CidadeController {
     public Cidade atualizar(@PathVariable Long id,
                             @RequestBody Cidade cidade) {
 
-        var cidadeBuscada = service.buscarOuFalhar(id);
-
-        BeanUtils.copyProperties(cidade, cidadeBuscada, "id");
-
         try {
+
+            var cidadeBuscada = service.buscarOuFalhar(id);
+
+            BeanUtils.copyProperties(cidade, cidadeBuscada, "id");
+
             return service.salvar(cidadeBuscada);
-        }catch (EntidadeNaoEncontradaException ex){
+
+        }catch (EstadoNaoEncontradoException ex){
             throw new NegocioException(ex.getMessage());
         }
 

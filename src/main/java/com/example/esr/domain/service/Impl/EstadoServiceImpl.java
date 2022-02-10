@@ -1,7 +1,7 @@
 package com.example.esr.domain.service.Impl;
 
 import com.example.esr.domain.exception.EntidadeEmUsoException;
-import com.example.esr.domain.exception.EntidadeNaoEncontradaException;
+import com.example.esr.domain.exception.EstadoNaoEncontradoException;
 import com.example.esr.domain.model.Estado;
 import com.example.esr.domain.repository.EstadoRepository;
 import com.example.esr.domain.service.EstadoService;
@@ -14,7 +14,6 @@ import java.util.List;
 @Service
 public class EstadoServiceImpl implements EstadoService {
 
-    public static final String MSG_ESTADO_NAO_ENCONTRADO = "Não existe cadastro de estado com o código %d.";
     public static final String MSG_ESTADO_EM_USO = "Estado de código %d não pode ser removido, pois está em uso.";
 
     private final EstadoRepository estadoRepository;
@@ -48,9 +47,7 @@ public class EstadoServiceImpl implements EstadoService {
 
         }catch (EmptyResultDataAccessException ex){
 
-            throw new EntidadeNaoEncontradaException(
-                  String.format(MSG_ESTADO_NAO_ENCONTRADO, id)
-            );
+            throw new EstadoNaoEncontradoException(id);
 
         } catch (DataIntegrityViolationException ex){
 
@@ -66,9 +63,7 @@ public class EstadoServiceImpl implements EstadoService {
     public Estado buscarOuFalhar(Long id) {
 
         return estadoRepository.findById(id)
-                .orElseThrow(() -> new EntidadeNaoEncontradaException(
-                        String.format(MSG_ESTADO_NAO_ENCONTRADO, id))
-                );
+                .orElseThrow(() -> new EstadoNaoEncontradoException(id));
 
     }
 
