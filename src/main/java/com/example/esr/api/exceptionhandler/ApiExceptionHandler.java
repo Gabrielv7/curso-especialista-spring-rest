@@ -3,7 +3,9 @@ package com.example.esr.api.exceptionhandler;
 import com.example.esr.domain.exception.EntidadeEmUsoException;
 import com.example.esr.domain.exception.EntidadeNaoEncontradaException;
 import com.example.esr.domain.exception.NegocioException;
+import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
+import com.fasterxml.jackson.databind.exc.PropertyBindingException;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -15,6 +17,7 @@ import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
@@ -73,6 +76,12 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 
         }
 
+        if(rootCause instanceof PropertyBindingException){
+
+            return handlePropertyBindingException((PropertyBindingException)rootCause, headers, status, request);
+
+        }
+
         var problemType = ProblemType.MENSAGEM_INCOMPREENSIVEL;
 
         var detail = "O corpo da requisição está inválido.Verifique erro de sintaxe.";
@@ -82,11 +91,24 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
         return handleExceptionInternal(ex, problem, new HttpHeaders(), status, request);
     }
 
+    private ResponseEntity<Object> handlePropertyBindingException(PropertyBindingException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
+
+        var problemType = ProblemType.MENSAGEM_INCOMPREENSIVEL;
+
+        String detail = String.format("A propiedade '%s' não existe no recurso %s.", ex.getPropertyName(), ex.getReferringClass().getSimpleName());
+
+        var problem = createProblemBuilder(status, problemType, detail).build();
+
+
+        return handleExceptionInternal(ex, problem, headers, status, request);
+
+    }
+
     private ResponseEntity<Object> handleInvalidFormatException(InvalidFormatException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
 
-       var path = ex.getPath().stream()
-                        .map(ref -> ref.getFieldName())
-                        .collect(Collectors.joining("."));
+        // Criei o método joinPath para reaproveitar em todos os métodos que precisam
+        // concatenar os nomes das propriedades (separando por ".")
+       var path = joinPath(ex.getPath());
 
         var problemType = ProblemType.MENSAGEM_INCOMPREENSIVEL;
 
@@ -132,4 +154,13 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
                 .detail(detail);
 
     }
+
+    private String joinPath(List<JsonMappingException.Reference> reference){
+
+        return reference.stream()
+                .map(ref -> ref.getFieldName())
+                .collect(Collectors.joining("."));
+
+    }
+
 }
