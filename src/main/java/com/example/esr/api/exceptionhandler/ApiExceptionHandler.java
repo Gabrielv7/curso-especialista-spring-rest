@@ -6,6 +6,7 @@ import com.example.esr.domain.exception.NegocioException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
@@ -56,6 +57,18 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 
         return handleExceptionInternal(ex, problem, new HttpHeaders(), status, request);
 
+    }
+
+    @Override
+    protected ResponseEntity<Object> handleHttpMessageNotReadable(HttpMessageNotReadableException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
+
+        var problemType = ProblemType.MENSAGEM_INCOMPREENSIVEL;
+
+        var detail = "O corpo da requisição está inválido.Verifique erro de sintaxe.";
+
+        var problem = createProblemBuilder(status, problemType, detail).build();
+
+        return handleExceptionInternal(ex, problem, new HttpHeaders(), status, request);
     }
 
     @Override
