@@ -30,9 +30,9 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 
       var problemType = ProblemType.ERRO_DE_SISTEMA;
 
-      var detail = "Ocorreu um erro interno inesperado no sistema. "
-              + "Tente novamente e se o problema persistir, entre em contato "
-              + "com o administrador do sistema.";
+      var detail = UserMessage.MSG_ERRO_GENERICA.getMensagem();
+
+      var userMessage = UserMessage.MSG_ERRO_GENERICA.getMensagem();
 
         // Importante colocar o printStackTrace (pelo menos por enquanto, que não estamos
         // fazendo logging) para mostrar a stacktrace no console
@@ -40,7 +40,7 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
         // para você durante, especialmente na fase de desenvolvimento
         ex.printStackTrace();
 
-        var problem = createProblemBuilder(status, problemType, detail).build();
+        var problem = createProblemBuilder(status, problemType, detail, userMessage).build();
 
         return handleExceptionInternal(ex, problem, new HttpHeaders(), status, request);
 
@@ -51,10 +51,14 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
                                                                        WebRequest request){
 
         var status = HttpStatus.NOT_FOUND;
+
         var problemType = ProblemType.ENTIDADE_NAO_ENCONTRADA;
+
         var detail = ex.getMessage();
 
-        var problem = createProblemBuilder(status, problemType, detail).build();
+        var userMessage = UserMessage.MSG_RECURSO_NAO_ENCONTRADO.getMensagem();
+
+        var problem = createProblemBuilder(status, problemType, detail, userMessage).build();
 
         return handleExceptionInternal(ex, problem, new HttpHeaders(), status, request);
 
@@ -64,10 +68,14 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
     public ResponseEntity<Object> handleNegocioException(NegocioException ex, WebRequest request) {
 
         var status = HttpStatus.BAD_REQUEST;
+
         var problemType = ProblemType.ERRO_NEGOCIO;
+
         var detail = ex.getMessage();
 
-        var problem = createProblemBuilder(status, problemType, detail).build();
+        var userMessage = UserMessage.MSG_VIOLACAO_REGRA_NEGOCIO.getMensagem();
+
+        var problem = createProblemBuilder(status, problemType, detail, userMessage).build();
 
         return handleExceptionInternal(ex, problem, new HttpHeaders(), status, request);
 
@@ -77,10 +85,14 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
     public ResponseEntity<Object> handleEntidadeEmUsoException(EntidadeEmUsoException ex, WebRequest request){
 
         var status = HttpStatus.CONFLICT;
+
         var problemType = ProblemType.ENTIDADE_EM_USO;
+
         var detail = ex.getMessage();
 
-        var problem = createProblemBuilder(status, problemType, detail).build();
+        var userMessage = UserMessage.MSG_OPERACAO_NAO_PERMITIDA.getMensagem();
+
+        var problem = createProblemBuilder(status, problemType, detail, userMessage).build();
 
 
         return handleExceptionInternal(ex, problem, new HttpHeaders(), status, request);
@@ -108,7 +120,9 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 
         var detail = "O corpo da requisição está inválido.Verifique erro de sintaxe.";
 
-        var problem = createProblemBuilder(status, problemType, detail).build();
+        var userMessage = UserMessage.MSG_DADOS_INVALIDOS.getMensagem();
+
+        var problem = createProblemBuilder(status, problemType, detail, userMessage).build();
 
         return handleExceptionInternal(ex, problem, new HttpHeaders(), status, request);
     }
@@ -117,9 +131,11 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 
         var problemType = ProblemType.MENSAGEM_INCOMPREENSIVEL;
 
-        String detail = String.format("A propiedade '%s' não existe no recurso %s.", ex.getPropertyName(), ex.getReferringClass().getSimpleName());
+        var detail = String.format("A propiedade '%s' não existe no recurso %s.", ex.getPropertyName(), ex.getReferringClass().getSimpleName());
 
-        var problem = createProblemBuilder(status, problemType, detail).build();
+        var userMessage = UserMessage.MSG_DADOS_INVALIDOS.getMensagem();
+
+        var problem = createProblemBuilder(status, problemType, detail, userMessage).build();
 
 
         return handleExceptionInternal(ex, problem, headers, status, request);
@@ -130,14 +146,16 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 
         // Criei o método joinPath para reaproveitar em todos os métodos que precisam
         // concatenar os nomes das propriedades (separando por ".")
-       var path = joinPath(ex.getPath());
+        var path = joinPath(ex.getPath());
 
         var problemType = ProblemType.MENSAGEM_INCOMPREENSIVEL;
 
         String detail = String.format("A propiedade '%s' recebeu o valor '%s' que é de um tipo inválido." +
                                         "Corrija e informe um valor compatível com o tipo %s.", path, ex.getValue(), ex.getTargetType().getSimpleName());
 
-        var problem = createProblemBuilder(status, problemType, detail).build();
+        var userMessage = UserMessage.MSG_DADOS_INVALIDOS.getMensagem();
+
+        var problem = createProblemBuilder(status, problemType, detail, userMessage).build();
 
 
         return handleExceptionInternal(ex, problem, headers, status, request);
@@ -166,13 +184,15 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
         return super.handleExceptionInternal(ex, body, headers, status, request);
     }
 
-    private Problem.ProblemBuilder createProblemBuilder(HttpStatus status, ProblemType problemType, String detail) {
+    private Problem.ProblemBuilder createProblemBuilder(HttpStatus status, ProblemType problemType, String detail,
+                                                        String userMessage) {
 
         return Problem.builder()
                 .status(status.value())
                 .type(problemType.getUri())
                 .title(problemType.getTitulo())
                 .dateTime(LocalDateTime.now())
+                .userMessage(userMessage)
                 .detail(detail);
 
     }
