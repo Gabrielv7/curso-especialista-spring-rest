@@ -24,6 +24,28 @@ import java.util.stream.Collectors;
 @ControllerAdvice
 public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 
+    ResponseEntity<Object> handleUncaught(Exception ex, WebRequest request){
+
+      var status = HttpStatus.INTERNAL_SERVER_ERROR;
+
+      var problemType = ProblemType.ERRO_DE_SISTEMA;
+
+      var detail = "Ocorreu um erro interno inesperado no sistema. "
+              + "Tente novamente e se o problema persistir, entre em contato "
+              + "com o administrador do sistema.";
+
+        // Importante colocar o printStackTrace (pelo menos por enquanto, que não estamos
+        // fazendo logging) para mostrar a stacktrace no console
+        // Se não fizer isso, você não vai ver a stacktrace de exceptions que seriam importantes
+        // para você durante, especialmente na fase de desenvolvimento
+        ex.printStackTrace();
+
+        var problem = createProblemBuilder(status, problemType, detail).build();
+
+        return handleExceptionInternal(ex, problem, new HttpHeaders(), status, request);
+
+    }
+
     @ExceptionHandler(EntidadeNaoEncontradaException.class)
     public ResponseEntity<Object> handleEntidadeNaoEncontradaException(EntidadeNaoEncontradaException ex,
                                                                        WebRequest request){
