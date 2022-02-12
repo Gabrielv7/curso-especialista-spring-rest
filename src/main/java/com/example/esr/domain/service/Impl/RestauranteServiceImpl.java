@@ -5,10 +5,15 @@ import com.example.esr.domain.model.Restaurante;
 import com.example.esr.domain.repository.RestauranteRepository;
 import com.example.esr.domain.service.CozinhaService;
 import com.example.esr.domain.service.RestauranteService;
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.apache.commons.lang.exception.ExceptionUtils;
+import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.http.server.ServletServerHttpRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ReflectionUtils;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 import java.util.Map;
 
@@ -35,7 +40,7 @@ public class RestauranteServiceImpl implements RestauranteService {
     public Restaurante salvar(Restaurante restaurante) {
 
         // Pega o ID da cozinha
-        long cozinhaId  = restaurante.getCozinha().getId();
+        long cozinhaId = restaurante.getCozinha().getId();
 
         // busca a cozinha pelo ID, se a cozinha não existir lança a exeção CozinhaNaoEncontradaException
         var cozinha = cozinhaService.buscarOuFalhar(cozinhaId);
@@ -47,30 +52,46 @@ public class RestauranteServiceImpl implements RestauranteService {
     }
 
     @Override
-    public void merge(Map<String, Object> camposOrigem, Restaurante restauranteDestino) {
+    public void merge(Map<String, Object> camposOrigem, Restaurante restauranteDestino, HttpServletRequest request) {
 
-        ObjectMapper objectMapper = new ObjectMapper();
+        var servletServerHttpRequest = new ServletServerHttpRequest(request);
 
-        //Converte o Json para Java
-        Restaurante restauranteOrigem = objectMapper.convertValue(camposOrigem, Restaurante.class);
+        try {
 
-        camposOrigem.forEach((k, v) -> {
+            ObjectMapper objectMapper = new ObjectMapper();
 
-            //pega somente os campos de restaurante que veio na chave do mapa
-            var field = ReflectionUtils.findField(Restaurante.class, k);
+            // Falhar caso um propiedad esteja sendo ignorada
+            objectMapper.configure(DeserializationFeature.FAIL_ON_IGNORED_PROPERTIES, true);
 
-            //torna as variaveis de instancia acessivel
-            field.setAccessible(true);
+            // Falhar caso um propiedade não exista
+            objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, true);
 
-            // busca o valor do campo (field)
-            var novoValor = ReflectionUtils.getField(field, restauranteOrigem);
+            //Converte o Json para Java
+            Restaurante restauranteOrigem = objectMapper.convertValue(camposOrigem, Restaurante.class);
 
-            //System.out.println(k +" = "+ v + " = " + novoValor);
+            camposOrigem.forEach((k, v) -> {
 
-            // seta o valor dos campos(field) no restaurante de destino
-            ReflectionUtils.setField(field, restauranteDestino, novoValor);
+                //pega somente os campos de restaurante que veio na chave do mapa
+                var field = ReflectionUtils.findField(Restaurante.class, k);
 
-        });
+                //torna as variaveis de instancia acessivel
+                field.setAccessible(true);
+
+                // busca o valor do campo (field)
+                var novoValor = ReflectionUtils.getField(field, restauranteOrigem);
+
+                //System.out.println(k +" = "+ v + " = " + novoValor);
+
+                // seta o valor dos campos(field) no restaurante de destino
+                ReflectionUtils.setField(field, restauranteDestino, novoValor);
+
+            });
+
+        }catch (IllegalArgumentException ex){
+
+            var rootCause = ExceptionUtils.getRootCause(ex);
+            throw new HttpMessageNotReadableException(ex.getMessage(), rootCause, servletServerHttpRequest);
+        }
 
     }
 

@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
@@ -84,12 +85,13 @@ public class RestauranteController {
 
     @PatchMapping("/{id}")
     public Restaurante atualizarParcial(@PathVariable Long id,
-                                        @RequestBody Map<String, Object> campos) {
+                                        @RequestBody Map<String, Object> campos,
+                                        HttpServletRequest request) {
 
         Restaurante restauranteAtual = service.buscarOuFalhar(id);
 
         // faz o merge dos valores que veio no mapa para o restaurante buscado
-        service.merge(campos, restauranteAtual);
+        service.merge(campos, restauranteAtual, request);
 
         return this.atualizar(id,restauranteAtual);
 
