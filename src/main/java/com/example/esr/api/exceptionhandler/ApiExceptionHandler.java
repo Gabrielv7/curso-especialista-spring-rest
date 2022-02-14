@@ -170,6 +170,8 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
             body = Problem.builder()
                     .title(status.getReasonPhrase())
                     .status(status.value())
+                    .userMessage(UserMessage.MSG_ERRO_GENERICA.getMensagem())
+                    .timestamp(LocalDateTime.now())
                     .build();
 
         }else if(body instanceof String){
@@ -191,7 +193,7 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
                 .status(status.value())
                 .type(problemType.getUri())
                 .title(problemType.getTitulo())
-                .dateTime(LocalDateTime.now())
+                .timestamp(LocalDateTime.now())
                 .userMessage(userMessage)
                 .detail(detail);
 
