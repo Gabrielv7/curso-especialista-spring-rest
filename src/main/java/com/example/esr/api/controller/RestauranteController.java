@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
@@ -52,7 +53,7 @@ public class RestauranteController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Restaurante adicionar(@RequestBody Restaurante restaurante){
+    public Restaurante adicionar(@Valid @RequestBody Restaurante restaurante){
 
         try {
             return service.salvar(restaurante);
