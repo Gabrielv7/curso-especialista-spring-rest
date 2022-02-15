@@ -7,6 +7,8 @@ import lombok.Getter;
 @Getter
 public class Field {
 
+    private String property;
+
     private String message;
 
 }

@@ -116,7 +116,8 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
         List<Field> problemFields = bidingResult.getFieldErrors()
                                     .stream()
                                     .map(fieldError -> Field.builder()
-                                    .message(fieldError.getField().toUpperCase() +" "+ fieldError.getDefaultMessage())
+                                    .property(fieldError.getField())
+                                    .message(fieldError.getDefaultMessage())
                                     .build())
                                     .collect(Collectors.toList());
 
