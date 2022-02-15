@@ -7,6 +7,7 @@ import lombok.Builder;
 import lombok.Getter;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @JsonInclude(Include.NON_NULL)
 @Builder
@@ -25,5 +26,7 @@ public class Problem { // RFC 7807: https://datatracker.ietf.org/doc/html/rfc780
     private LocalDateTime timestamp;
 
     private String userMessage;
+
+    private List<Field> fields;
 
 }

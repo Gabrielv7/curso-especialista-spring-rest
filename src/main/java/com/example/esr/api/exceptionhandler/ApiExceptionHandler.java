@@ -25,6 +25,7 @@ import java.util.stream.Collectors;
 @ControllerAdvice
 public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 
+    @ExceptionHandler(Exception.class)
     ResponseEntity<Object> handleUncaught(Exception ex, WebRequest request){
 
       var status = HttpStatus.INTERNAL_SERVER_ERROR;
@@ -110,7 +111,18 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 
         var userMessage = UserMessage.MSG_DADOS_INVALIDOS.getMensagem();
 
-        var problem = createProblemBuilder(status, problemType, detail, userMessage).build();
+        var bidingResult = ex.getBindingResult();
+
+        List<Field> problemFields = bidingResult.getFieldErrors()
+                                    .stream()
+                                    .map(fieldError -> Field.builder()
+                                    .message(fieldError.getField().toUpperCase() +" "+ fieldError.getDefaultMessage())
+                                    .build())
+                                    .collect(Collectors.toList());
+
+        var problem = createProblemBuilder(status, problemType, detail, userMessage)
+                            .fields(problemFields)
+                            .build();
 
         return handleExceptionInternal(ex, problem, headers, status, request);
     }
