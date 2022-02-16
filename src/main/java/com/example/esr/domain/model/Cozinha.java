@@ -21,7 +21,7 @@ import java.util.List;
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @Entity
 public class Cozinha {
-
+    //
     @NotNull(groups = Groups.CadastroRestaurante.class)
     @EqualsAndHashCode.Include
     @Id
