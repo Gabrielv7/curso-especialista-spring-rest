@@ -44,7 +44,7 @@ public class CozinhaController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Cozinha adicionar(@Valid @RequestBody Cozinha cozinha){
+    public Cozinha adicionar(@RequestBody @Valid Cozinha cozinha){
 
          return service.salvar(cozinha);
 
@@ -53,7 +53,7 @@ public class CozinhaController {
     @PutMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
     public Cozinha atualizar(@PathVariable Long id,
-                             @RequestBody Cozinha cozinha){
+                             @RequestBody @Valid Cozinha cozinha){
 
         var cozinhaAtual = service.buscarOuFalhar(id);
 

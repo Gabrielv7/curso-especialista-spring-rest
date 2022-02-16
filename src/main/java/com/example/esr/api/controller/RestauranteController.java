@@ -48,7 +48,7 @@ public class RestauranteController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Restaurante adicionar(@Valid @RequestBody Restaurante restaurante){
+    public Restaurante adicionar(@RequestBody @Valid Restaurante restaurante){
 
         try {
             return service.salvar(restaurante);
@@ -61,7 +61,7 @@ public class RestauranteController {
     @PutMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
     public Restaurante atualizar(@PathVariable Long id,
-                                 @RequestBody Restaurante restaurante) {
+                                 @RequestBody @Valid Restaurante restaurante) {
 
         try {
 

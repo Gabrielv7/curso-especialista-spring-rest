@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -44,7 +45,7 @@ public class EstadoController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Estado adicionar(@RequestBody Estado estado){
+    public Estado adicionar(@RequestBody @Valid Estado estado){
 
         return service.salvar(estado);
 
@@ -53,7 +54,7 @@ public class EstadoController {
     @PutMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
     public Estado atualizar(@PathVariable Long id,
-                            @RequestBody Estado estado){
+                            @RequestBody @Valid Estado estado){
 
         var estadoBuscado = service.buscarOuFalhar(id);
 
