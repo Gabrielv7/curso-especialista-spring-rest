@@ -7,6 +7,9 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 import com.fasterxml.jackson.databind.exc.PropertyBindingException;
 import org.apache.commons.lang.exception.ExceptionUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,6 +27,9 @@ import java.util.stream.Collectors;
 
 @ControllerAdvice
 public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
+
+    @Autowired
+    private MessageSource messageSource;
 
     @ExceptionHandler(Exception.class)
     ResponseEntity<Object> handleUncaught(Exception ex, WebRequest request){
@@ -115,10 +121,15 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 
         List<Field> problemFields = bidingResult.getFieldErrors()
                                     .stream()
-                                    .map(fieldError -> Field.builder()
-                                    .property(fieldError.getField())
-                                    .message(fieldError.getDefaultMessage())
-                                    .build())
+                                    .map(fieldError -> {
+
+                                        String message = messageSource.getMessage(fieldError, LocaleContextHolder.getLocale());
+
+                                       return Field.builder()
+                                                .property(fieldError.getField())
+                                                .message(message)
+                                                .build();
+                                    })
                                     .collect(Collectors.toList());
 
         var problem = createProblemBuilder(status, problemType, detail, userMessage)
