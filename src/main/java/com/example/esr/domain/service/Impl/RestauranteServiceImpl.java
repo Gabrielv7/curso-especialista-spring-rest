@@ -14,8 +14,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.ReflectionUtils;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 public class RestauranteServiceImpl implements RestauranteService {
@@ -31,10 +33,12 @@ public class RestauranteServiceImpl implements RestauranteService {
     @Override
     public List<Restaurante> listar() {
 
-        return restauranteRepository.findAll();
+        return restauranteRepository.findAll()
+                                     .stream()
+                                     .sorted(Comparator.comparing(Restaurante::getId))
+                                     .collect(Collectors.toList());
 
     }
-
 
     @Override
     public Restaurante salvar(Restaurante restaurante) {
