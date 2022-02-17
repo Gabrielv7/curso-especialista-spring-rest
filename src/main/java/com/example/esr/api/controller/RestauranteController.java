@@ -1,5 +1,6 @@
 package com.example.esr.api.controller;
 
+import com.example.esr.api.model.RestauranteDTO;
 import com.example.esr.domain.exception.CozinhaNaoEncontradaException;
 import com.example.esr.domain.exception.NegocioException;
 import com.example.esr.domain.model.Restaurante;
@@ -40,10 +41,13 @@ public class RestauranteController {
 
     @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public Restaurante buscar(@PathVariable Long id) {
+    public RestauranteDTO buscar(@PathVariable Long id) {
 
-        return service.buscarOuFalhar(id);
+       var restaurante = service.buscarOuFalhar(id);
 
+       var restauranteDto = null; // conversão de entidade para dto
+
+        return restauranteDto;
     }
 
     @PostMapping
