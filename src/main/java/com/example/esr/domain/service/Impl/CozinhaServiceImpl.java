@@ -8,6 +8,7 @@ import com.example.esr.domain.service.CozinhaService;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -22,6 +23,7 @@ public class CozinhaServiceImpl implements CozinhaService {
         this.cozinhaRepository = cozinhaRepository;
     }
 
+    @Transactional
     @Override
     public Cozinha salvar(Cozinha cozinha) {
 
@@ -36,6 +38,7 @@ public class CozinhaServiceImpl implements CozinhaService {
 
     }
 
+    @Transactional
     @Override
     public void excluir(Long id) {
 

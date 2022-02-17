@@ -11,6 +11,7 @@ import org.apache.commons.lang.exception.ExceptionUtils;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.http.server.ServletServerHttpRequest;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ReflectionUtils;
 
 import javax.servlet.http.HttpServletRequest;
@@ -40,6 +41,7 @@ public class RestauranteServiceImpl implements RestauranteService {
 
     }
 
+    @Transactional
     @Override
     public Restaurante salvar(Restaurante restaurante) {
 

@@ -8,6 +8,7 @@ import com.example.esr.domain.service.EstadoService;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -31,6 +32,7 @@ public class EstadoServiceImpl implements EstadoService {
 
     }
 
+    @Transactional
     @Override
     public Estado salvar(Estado estado) {
 
@@ -38,6 +40,7 @@ public class EstadoServiceImpl implements EstadoService {
 
     }
 
+    @Transactional
     @Override
     public void excluir(Long id) {
 
