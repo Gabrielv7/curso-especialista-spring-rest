@@ -1,5 +1,6 @@
 package com.example.esr.api.controller;
 
+import com.example.esr.api.mapper.RestauranteMapper;
 import com.example.esr.api.model.RestauranteDTO;
 import com.example.esr.domain.exception.CozinhaNaoEncontradaException;
 import com.example.esr.domain.exception.NegocioException;
@@ -28,14 +29,17 @@ public class RestauranteController {
 
     private final RestauranteService service;
 
-    public RestauranteController(RestauranteService service) {
+    private final RestauranteMapper mapper;
+
+    public RestauranteController(RestauranteService service, RestauranteMapper mapper) {
         this.service = service;
+        this.mapper = mapper;
     }
 
     @GetMapping
-    public List<Restaurante> listar() {
+    public List<RestauranteDTO> listar() {
 
-        return service.listar();
+        return mapper.toCollectionDTO(service.listar());
 
     }
 
@@ -45,17 +49,16 @@ public class RestauranteController {
 
        var restaurante = service.buscarOuFalhar(id);
 
-       var restauranteDto = null; // conversão de entidade para dto
+       return mapper.toModel(restaurante);
 
-        return restauranteDto;
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Restaurante adicionar(@RequestBody @Valid Restaurante restaurante){
+    public RestauranteDTO adicionar(@RequestBody @Valid Restaurante restaurante){
 
         try {
-            return service.salvar(restaurante);
+            return mapper.toModel(service.salvar(restaurante));
         }catch (CozinhaNaoEncontradaException ex){
             throw new NegocioException(ex.getMessage(), ex);
         }
@@ -64,8 +67,8 @@ public class RestauranteController {
 
     @PutMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public Restaurante atualizar(@PathVariable Long id,
-                                 @RequestBody @Valid Restaurante restaurante) {
+    public RestauranteDTO atualizar(@PathVariable Long id,
+                                    @RequestBody @Valid Restaurante restaurante) {
 
         try {
 
@@ -74,7 +77,7 @@ public class RestauranteController {
         BeanUtils.copyProperties(restaurante, restauranteAtual, "id", "formasPagamento",
                                         "endereco", "dataCadastro", "produtos");
 
-        return service.salvar(restauranteAtual);
+        return mapper.toModel(service.salvar(restauranteAtual));
 
         }catch (CozinhaNaoEncontradaException ex){
             throw new NegocioException(ex.getMessage(), ex);
@@ -84,9 +87,9 @@ public class RestauranteController {
 
 
     @PatchMapping("/{id}")
-    public Restaurante atualizarParcial(@PathVariable Long id,
-                                        @RequestBody Map<String, Object> campos,
-                                        HttpServletRequest request) {
+    public RestauranteDTO atualizarParcial(@PathVariable Long id,
+                                           @RequestBody Map<String, Object> campos,
+                                           HttpServletRequest request) {
 
         Restaurante restauranteAtual = service.buscarOuFalhar(id);
 
@@ -96,7 +99,5 @@ public class RestauranteController {
         return this.atualizar(id,restauranteAtual);
 
     }
-
-
 
 }
