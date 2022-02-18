@@ -1,8 +1,9 @@
 package com.example.esr.api.controller;
 
-import com.example.esr.domain.model.Estado;
+import com.example.esr.api.mapper.EstadoMapper;
+import com.example.esr.api.model.dto.EstadoDTO;
+import com.example.esr.api.model.input.estado.EstadoInput;
 import com.example.esr.domain.service.EstadoService;
-import org.springframework.beans.BeanUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -23,44 +24,49 @@ public class EstadoController {
 
     private final EstadoService service;
 
-    public EstadoController(EstadoService service) {
+    private final EstadoMapper mapper;
+
+    public EstadoController(EstadoService service, EstadoMapper mapper) {
         this.service = service;
+        this.mapper = mapper;
     }
 
 
     @GetMapping
-    public List<Estado> listar(){
+    public List<EstadoDTO> listar(){
 
-        return service.listar();
+        return mapper.toCollectionDto(service.listar());
 
     }
 
     @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public Estado buscar(@PathVariable Long id){
+    public EstadoDTO buscar(@PathVariable Long id){
 
-      return service.buscarOuFalhar(id);
+      return mapper.toDto(service.buscarOuFalhar(id));
 
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Estado adicionar(@RequestBody @Valid Estado estado){
+    public EstadoDTO adicionar(@RequestBody @Valid EstadoInput estadoInput){
 
-        return service.salvar(estado);
+        var estado = mapper.toEntity(estadoInput);
+
+        return mapper.toDto(service.salvar(estado));
 
     }
 
     @PutMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public Estado atualizar(@PathVariable Long id,
-                            @RequestBody @Valid Estado estado){
+    public EstadoDTO atualizar(@PathVariable Long id,
+                            @RequestBody @Valid EstadoInput estadoInput){
 
         var estadoBuscado = service.buscarOuFalhar(id);
 
-        BeanUtils.copyProperties(estado, estadoBuscado, "id");
+       mapper.copyToEntity(estadoInput, estadoBuscado);
 
-        return service.salvar(estadoBuscado);
+        return mapper.toDto(service.salvar(estadoBuscado));
 
     }
 

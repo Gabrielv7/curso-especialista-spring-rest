@@ -1,13 +1,13 @@
-package com.example.esr.api.model.input;
+package com.example.esr.api.model.input.cidade;
 
 import lombok.Getter;
 import lombok.Setter;
 
 import javax.validation.constraints.NotNull;
 
-@Getter
 @Setter
-public class CozinhaIdInput {
+@Getter
+public class EstadoIdInput {
 
     @NotNull
     private Long id;

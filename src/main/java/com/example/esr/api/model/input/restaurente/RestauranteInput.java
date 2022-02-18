@@ -1,4 +1,4 @@
-package com.example.esr.api.model.input;
+package com.example.esr.api.model.input.restaurente;
 
 import lombok.Getter;
 import lombok.Setter;

@@ -1,7 +1,7 @@
 package com.example.esr.api.mapper;
 
 import com.example.esr.api.model.dto.RestauranteDTO;
-import com.example.esr.api.model.input.RestauranteInput;
+import com.example.esr.api.model.input.restaurente.RestauranteInput;
 import com.example.esr.domain.model.Cozinha;
 import com.example.esr.domain.model.Restaurante;
 import org.modelmapper.ModelMapper;
@@ -19,13 +19,13 @@ public class RestauranteMapper {
         this.modelMapper = modelMapper;
     }
 
-    public RestauranteDTO toModel(Restaurante restaurante) {
+    public RestauranteDTO toDto(Restaurante restaurante) {
         return modelMapper.map(restaurante, RestauranteDTO.class);
     }
 
-    public List<RestauranteDTO> toCollectionDTO (List<Restaurante> restaurantes){
+    public List<RestauranteDTO> toCollectionDto(List<Restaurante> restaurantes){
 
-        return restaurantes.stream().map(this::toModel).collect(Collectors.toList());
+        return restaurantes.stream().map(this::toDto).collect(Collectors.toList());
 
     }
 

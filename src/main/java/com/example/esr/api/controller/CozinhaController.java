@@ -1,8 +1,9 @@
 package com.example.esr.api.controller;
 
-import com.example.esr.domain.model.Cozinha;
+import com.example.esr.api.mapper.CozinhaMapper;
+import com.example.esr.api.model.dto.CozinhaDTO;
+import com.example.esr.api.model.input.cozinha.CozinhaInput;
 import com.example.esr.domain.service.CozinhaService;
-import org.springframework.beans.BeanUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -23,43 +24,48 @@ public class CozinhaController {
 
     private final CozinhaService service;
 
-    public CozinhaController( CozinhaService cozinhaService) {
+    private final CozinhaMapper mapper;
+
+    public CozinhaController(CozinhaService cozinhaService, CozinhaMapper mapper) {
         this.service = cozinhaService;
+        this.mapper = mapper;
     }
 
     @GetMapping
-    public List<Cozinha> listar(){
+    public List<CozinhaDTO> listar(){
 
-       return service.listar();
+       return mapper.toCollectionDto(service.listar());
 
     }
 
     @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public Cozinha buscar (@PathVariable Long id){
+    public CozinhaDTO buscar (@PathVariable Long id){
 
-        return service.buscarOuFalhar(id);
+        return mapper.toDto(service.buscarOuFalhar(id));
 
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Cozinha adicionar(@RequestBody @Valid Cozinha cozinha){
+    public CozinhaDTO adicionar(@RequestBody @Valid CozinhaInput cozinhaInput){
 
-         return service.salvar(cozinha);
+        var cozinha = mapper.toEntity(cozinhaInput);
+
+         return mapper.toDto(service.salvar(cozinha));
 
     }
 
     @PutMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public Cozinha atualizar(@PathVariable Long id,
-                             @RequestBody @Valid Cozinha cozinha){
+    public CozinhaDTO atualizar(@PathVariable Long id,
+                             @RequestBody @Valid CozinhaInput cozinhaInput){
 
         var cozinhaAtual = service.buscarOuFalhar(id);
 
-        BeanUtils.copyProperties(cozinha, cozinhaAtual, "id");
+        mapper.copyToEntity(cozinhaInput, cozinhaAtual);
 
-        return service.salvar(cozinhaAtual);
+        return mapper.toDto(service.salvar(cozinhaAtual));
 
     }
 

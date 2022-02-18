@@ -2,12 +2,10 @@ package com.example.esr.api.controller;
 
 import com.example.esr.api.mapper.RestauranteMapper;
 import com.example.esr.api.model.dto.RestauranteDTO;
-import com.example.esr.api.model.input.RestauranteInput;
+import com.example.esr.api.model.input.restaurente.RestauranteInput;
 import com.example.esr.domain.exception.CozinhaNaoEncontradaException;
 import com.example.esr.domain.exception.NegocioException;
-import com.example.esr.domain.model.Restaurante;
 import com.example.esr.domain.service.RestauranteService;
-import org.springframework.beans.BeanUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -37,7 +35,7 @@ public class RestauranteController {
     @GetMapping
     public List<RestauranteDTO> listar() {
 
-        return mapper.toCollectionDTO(service.listar());
+        return mapper.toCollectionDto(service.listar());
 
     }
 
@@ -47,7 +45,7 @@ public class RestauranteController {
 
        var restaurante = service.buscarOuFalhar(id);
 
-       return mapper.toModel(restaurante);
+       return mapper.toDto(restaurante);
 
     }
 
@@ -59,7 +57,7 @@ public class RestauranteController {
 
             var restaurante = mapper.toEntity(restauranteInput);
 
-            return mapper.toModel(service.salvar(restaurante));
+            return mapper.toDto(service.salvar(restaurante));
 
         }catch (CozinhaNaoEncontradaException ex){
             throw new NegocioException(ex.getMessage(), ex);
@@ -78,7 +76,7 @@ public class RestauranteController {
 
          mapper.copyToEntity(restauranteInput, restaurante);
 
-        return mapper.toModel(service.salvar(restaurante));
+        return mapper.toDto(service.salvar(restaurante));
 
         }catch (CozinhaNaoEncontradaException ex){
             throw new NegocioException(ex.getMessage(), ex);

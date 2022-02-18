@@ -1,6 +1,5 @@
 package com.example.esr.domain.model;
 
-import com.example.esr.Groups;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
@@ -12,11 +11,6 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.validation.Valid;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
-import javax.validation.groups.ConvertGroup;
-import javax.validation.groups.Default;
 
 @Getter
 @Setter
@@ -29,13 +23,9 @@ public class Cidade {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotBlank
     @Column(nullable = false)
     private String nome;
 
-    @Valid
-    @ConvertGroup(from = Default.class, to = Groups.EstadoId.class)
-    @NotNull
     @ManyToOne
     @JoinColumn(nullable = false)
     private Estado estado;

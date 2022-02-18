@@ -1,10 +1,11 @@
 package com.example.esr.api.controller;
 
+import com.example.esr.api.mapper.CidadeMapper;
+import com.example.esr.api.model.dto.CidadeDTO;
+import com.example.esr.api.model.input.cidade.CidadeInput;
 import com.example.esr.domain.exception.EstadoNaoEncontradoException;
 import com.example.esr.domain.exception.NegocioException;
-import com.example.esr.domain.model.Cidade;
 import com.example.esr.domain.service.CidadeService;
-import org.springframework.beans.BeanUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -25,33 +26,40 @@ public class CidadeController {
 
     private final CidadeService service;
 
-    public CidadeController(CidadeService service) {
+    private final CidadeMapper mapper;
+
+    public CidadeController(CidadeService service, CidadeMapper mapper) {
         this.service = service;
+        this.mapper = mapper;
     }
 
 
     @GetMapping
-    public List<Cidade> listar() {
+    public List<CidadeDTO> listar() {
 
-        return service.listar();
+        return mapper.toCollectionDto(service.listar());
 
     }
 
     @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public Cidade buscar(@PathVariable Long id) {
+    public CidadeDTO buscar(@PathVariable Long id) {
 
-       return service.buscarOuFalhar(id);
+       return mapper.toDto(service.buscarOuFalhar(id));
 
     }
 
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Cidade adicionar(@RequestBody @Valid Cidade cidade){
+    public CidadeDTO adicionar(@RequestBody @Valid CidadeInput cidadeInput){
 
         try {
-            return service.salvar(cidade);
+
+            var cidade = mapper.toEntity(cidadeInput);
+
+            return mapper.toDto(service.salvar(cidade));
+
         }catch (EstadoNaoEncontradoException ex){
             throw new NegocioException(ex.getMessage(), ex);
         }
@@ -60,16 +68,16 @@ public class CidadeController {
 
     @PutMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public Cidade atualizar(@PathVariable Long id,
-                            @RequestBody @Valid Cidade cidade) {
+    public CidadeDTO atualizar(@PathVariable Long id,
+                            @RequestBody @Valid CidadeInput cidadeInput) {
 
         try {
 
             var cidadeBuscada = service.buscarOuFalhar(id);
 
-            BeanUtils.copyProperties(cidade, cidadeBuscada, "id");
+            mapper.copyToEntity(cidadeInput, cidadeBuscada);
 
-            return service.salvar(cidadeBuscada);
+            return mapper.toDto(service.salvar(cidadeBuscada));
 
         }catch (EstadoNaoEncontradoException ex){
             throw new NegocioException(ex.getMessage(), ex);

@@ -5,19 +5,15 @@ import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.math.BigDecimal;
-
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 @Getter
 @Setter
-public class RestauranteDTO {
+public class CidadeDTO {
 
     private Long id;
 
     private String nome;
 
-    private BigDecimal precoFrete;
-
-    private CozinhaDTO cozinha;
+    private EstadoDTO estado;
 
 }
