@@ -57,7 +57,7 @@ public class RestauranteController {
 
         try {
 
-            var restaurante = mapper.toDomainObject(restauranteInput);
+            var restaurante = mapper.toEntity(restauranteInput);
 
             return mapper.toModel(service.salvar(restaurante));
 
@@ -74,7 +74,7 @@ public class RestauranteController {
 
         try {
 
-        var restaurante = mapper.toDomainObject(restauranteInput);
+        var restaurante = mapper.toEntity(restauranteInput);
 
         Restaurante restauranteAtual = service.buscarOuFalhar(id);
 
