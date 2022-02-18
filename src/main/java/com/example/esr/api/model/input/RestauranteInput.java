@@ -14,7 +14,7 @@ import java.math.BigDecimal;
 public class RestauranteInput {
 
     @NotBlank
-    private String Nome;
+    private String nome;
 
     @NotNull
     @PositiveOrZero
