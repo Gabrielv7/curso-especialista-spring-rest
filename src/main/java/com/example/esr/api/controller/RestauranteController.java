@@ -1,7 +1,8 @@
 package com.example.esr.api.controller;
 
 import com.example.esr.api.mapper.RestauranteMapper;
-import com.example.esr.api.model.RestauranteDTO;
+import com.example.esr.api.model.dto.RestauranteDTO;
+import com.example.esr.api.model.input.RestauranteInput;
 import com.example.esr.domain.exception.CozinhaNaoEncontradaException;
 import com.example.esr.domain.exception.NegocioException;
 import com.example.esr.domain.model.Restaurante;
@@ -9,7 +10,6 @@ import com.example.esr.domain.service.RestauranteService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -18,10 +18,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/restaurantes")
@@ -55,10 +53,14 @@ public class RestauranteController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public RestauranteDTO adicionar(@RequestBody @Valid Restaurante restaurante){
+    public RestauranteDTO adicionar(@RequestBody @Valid RestauranteInput restauranteInput){
 
         try {
+
+            var restaurante = mapper.toDomainObject(restauranteInput);
+
             return mapper.toModel(service.salvar(restaurante));
+
         }catch (CozinhaNaoEncontradaException ex){
             throw new NegocioException(ex.getMessage(), ex);
         }
@@ -68,9 +70,11 @@ public class RestauranteController {
     @PutMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
     public RestauranteDTO atualizar(@PathVariable Long id,
-                                    @RequestBody @Valid Restaurante restaurante) {
+                                    @RequestBody @Valid RestauranteInput restauranteInput) {
 
         try {
+
+        var restaurante = mapper.toDomainObject(restauranteInput);
 
         Restaurante restauranteAtual = service.buscarOuFalhar(id);
 
@@ -85,7 +89,7 @@ public class RestauranteController {
 
     }
 
-
+/*
     @PatchMapping("/{id}")
     public RestauranteDTO atualizarParcial(@PathVariable Long id,
                                            @RequestBody Map<String, Object> campos,
@@ -99,5 +103,5 @@ public class RestauranteController {
         return this.atualizar(id,restauranteAtual);
 
     }
-
+*/
 }

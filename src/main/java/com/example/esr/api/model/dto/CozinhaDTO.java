@@ -1,4 +1,4 @@
-package com.example.esr.api.model;
+package com.example.esr.api.model.dto;
 
 import lombok.Getter;
 import lombok.Setter;
