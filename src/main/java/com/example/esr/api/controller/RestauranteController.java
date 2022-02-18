@@ -74,14 +74,11 @@ public class RestauranteController {
 
         try {
 
-        var restaurante = mapper.toEntity(restauranteInput);
+        var restaurante = service.buscarOuFalhar(id);
 
-        Restaurante restauranteAtual = service.buscarOuFalhar(id);
+         mapper.copyToEntity(restauranteInput, restaurante);
 
-        BeanUtils.copyProperties(restaurante, restauranteAtual, "id", "formasPagamento",
-                                        "endereco", "dataCadastro", "produtos");
-
-        return mapper.toModel(service.salvar(restauranteAtual));
+        return mapper.toModel(service.salvar(restaurante));
 
         }catch (CozinhaNaoEncontradaException ex){
             throw new NegocioException(ex.getMessage(), ex);
