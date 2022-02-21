@@ -57,6 +57,7 @@ public class CidadeServiceImpl implements CidadeService {
         try {
 
             cidadeRepository.deleteById(id);
+            cidadeRepository.flush();
 
         }catch (EmptyResultDataAccessException ex){
 

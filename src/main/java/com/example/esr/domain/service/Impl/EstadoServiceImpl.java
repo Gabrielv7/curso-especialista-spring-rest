@@ -47,6 +47,7 @@ public class EstadoServiceImpl implements EstadoService {
         try{
 
             estadoRepository.deleteById(id);
+            estadoRepository.flush();
 
         }catch (EmptyResultDataAccessException ex){
 
