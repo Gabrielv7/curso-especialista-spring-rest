@@ -7,6 +7,7 @@ import com.example.esr.domain.exception.CozinhaNaoEncontradaException;
 import com.example.esr.domain.exception.NegocioException;
 import com.example.esr.domain.service.RestauranteService;
 import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -84,19 +85,20 @@ public class RestauranteController {
 
     }
 
-/*
-    @PatchMapping("/{id}")
-    public RestauranteDTO atualizarParcial(@PathVariable Long id,
-                                           @RequestBody Map<String, Object> campos,
-                                           HttpServletRequest request) {
+    @PutMapping("/{id}/ativo")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void ativar(@PathVariable Long id){
 
-        Restaurante restauranteAtual = service.buscarOuFalhar(id);
-
-        // faz o merge dos valores que veio no mapa para o restaurante buscado
-        service.merge(campos, restauranteAtual, request);
-
-        return this.atualizar(id,restauranteAtual);
+        service.ativar(id);
 
     }
-*/
+
+    @DeleteMapping("/{id}/ativo")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void inativar(@PathVariable Long id){
+
+        service.inativar(id);
+
+    }
+
 }

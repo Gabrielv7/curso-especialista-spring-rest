@@ -67,4 +67,8 @@ public class Restaurante {
     @JsonIgnore
     @OneToMany(mappedBy = "restaurante")
     private List<Produto> produtos;
+
+    @Column(columnDefinition = "true")
+    private Boolean ativo;
+
 }

@@ -108,4 +108,24 @@ public class RestauranteServiceImpl implements RestauranteService {
                 .orElseThrow(()-> new RestauranteNaoEncontradoException(id));
 
     }
+
+    @Transactional
+    @Override
+    public void ativar(Long id) {
+
+        var restaurante = this.buscarOuFalhar(id);
+
+        restaurante.setAtivo(true);
+
+    }
+
+    @Transactional
+    @Override
+    public void inativar(Long id) {
+
+        var restaurante = this.buscarOuFalhar(id);
+
+        restaurante.setAtivo(false);
+
+    }
 }
