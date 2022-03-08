@@ -1,5 +1,6 @@
 package com.example.esr.api.model.input.restaurente;
 
+import com.example.esr.api.model.input.endereco.EnderecoInput;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -23,4 +24,8 @@ public class RestauranteInput {
     @Valid
     @NotNull
     private CozinhaIdInput cozinha;
+
+    @Valid
+    @NotNull
+    private EnderecoInput endereco;
 }

@@ -3,6 +3,7 @@ package com.example.esr.api.controller;
 import com.example.esr.api.mapper.RestauranteMapper;
 import com.example.esr.api.model.dto.RestauranteDTO;
 import com.example.esr.api.model.input.restaurente.RestauranteInput;
+import com.example.esr.domain.exception.CidadeNaoEncontradaException;
 import com.example.esr.domain.exception.CozinhaNaoEncontradaException;
 import com.example.esr.domain.exception.NegocioException;
 import com.example.esr.domain.service.RestauranteService;
@@ -60,7 +61,7 @@ public class RestauranteController {
 
             return mapper.toDto(service.salvar(restaurante));
 
-        }catch (CozinhaNaoEncontradaException ex){
+        }catch (CozinhaNaoEncontradaException | CidadeNaoEncontradaException ex){
             throw new NegocioException(ex.getMessage(), ex);
         }
 
@@ -79,7 +80,7 @@ public class RestauranteController {
 
         return mapper.toDto(service.salvar(restaurante));
 
-        }catch (CozinhaNaoEncontradaException ex){
+        }catch (CozinhaNaoEncontradaException | CidadeNaoEncontradaException ex){
             throw new NegocioException(ex.getMessage(), ex);
         }
 

@@ -3,6 +3,7 @@ package com.example.esr.domain.service.Impl;
 import com.example.esr.domain.exception.RestauranteNaoEncontradoException;
 import com.example.esr.domain.model.Restaurante;
 import com.example.esr.domain.repository.RestauranteRepository;
+import com.example.esr.domain.service.CidadeService;
 import com.example.esr.domain.service.CozinhaService;
 import com.example.esr.domain.service.RestauranteService;
 import com.fasterxml.jackson.databind.DeserializationFeature;
@@ -25,10 +26,12 @@ public class RestauranteServiceImpl implements RestauranteService {
 
     private final RestauranteRepository restauranteRepository;
     private final CozinhaService cozinhaService;
+    private final CidadeService cidadeService;
 
-    public RestauranteServiceImpl(RestauranteRepository restauranteRepository, CozinhaService cozinhaService) {
+    public RestauranteServiceImpl(RestauranteRepository restauranteRepository, CozinhaService cozinhaService, CidadeService cidadeService) {
         this.restauranteRepository = restauranteRepository;
         this.cozinhaService = cozinhaService;
+        this.cidadeService = cidadeService;
     }
 
     @Override
@@ -48,11 +51,20 @@ public class RestauranteServiceImpl implements RestauranteService {
         // Pega o ID da cozinha
         long cozinhaId = restaurante.getCozinha().getId();
 
+        // Pega o ID da cidade
+        long cidadeId = restaurante.getEndereco().getCidade().getId();
+
         // busca a cozinha pelo ID, se a cozinha não existir lança a exeção CozinhaNaoEncontradaException
         var cozinha = cozinhaService.buscarOuFalhar(cozinhaId);
 
+        // busca a cidade pelo ID, se a cidade não existir lança a exeção CidadeNaoEncontradaException
+        var cidade = cidadeService.buscarOuFalhar(cidadeId);
+
         // Se a cozinha existir ela é adicionada ao restaurante
         restaurante.setCozinha(cozinha);
+
+        // Se a  cidade existir ela é adicionada ao restaurante
+        restaurante.getEndereco().setCidade(cidade);
 
         return restauranteRepository.save(restaurante);
     }
