@@ -37,8 +37,17 @@ public interface RestauranteService {
      */
     Restaurante buscarOuFalhar(Long id);
 
+    /**
+     * Ativa um restaurante
+     * @param id Identificador do Restaurante
+     */
     void ativar(Long id);
 
+
+    /**
+     * Inativa um restaurante
+     * @param id Identificador do Restaurante
+     */
     void inativar(Long id);
 
 }
