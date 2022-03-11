@@ -1,5 +1,6 @@
 package com.example.esr.api.exceptionhandler;
 
+import com.example.esr.domain.exception.EmailJaCadastadoException;
 import com.example.esr.domain.exception.EntidadeEmUsoException;
 import com.example.esr.domain.exception.EntidadeNaoEncontradaException;
 import com.example.esr.domain.exception.NegocioException;
@@ -102,6 +103,23 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 
         var problem = createProblemBuilder(status, problemType, detail, userMessage).build();
 
+
+        return handleExceptionInternal(ex, problem, new HttpHeaders(), status, request);
+
+    }
+
+    @ExceptionHandler(EmailJaCadastadoException.class)
+    public ResponseEntity<Object> handleEmailExists(EmailJaCadastadoException ex, WebRequest request){
+
+        var status = HttpStatus.BAD_REQUEST;
+
+        var problemType = ProblemType.EMAIL_JA_CADASTRADO;
+
+        var detail = ex.getMessage();
+
+        var userMessage = ex.getMessage();
+
+        var problem = createProblemBuilder(status, problemType, detail, userMessage).build();
 
         return handleExceptionInternal(ex, problem, new HttpHeaders(), status, request);
 

@@ -11,7 +11,8 @@ public enum ProblemType {
     ERRO_NEGOCIO("/erro-negocio", "Violação de regra de negócio"),
     MENSAGEM_INCOMPREENSIVEL("/mensagem-incompreensivel","Mensagem incompreensível"),
     ERRO_DE_SISTEMA("/erro-de-sistema", "Erro de sistema"),
-    DADOS_INVALIDOS("/dados-invalidos", "Dados inválidos");
+    DADOS_INVALIDOS("/dados-invalidos", "Dados inválidos"),
+    EMAIL_JA_CADASTRADO("/email-ja-cadastrado", "Email já cadastrado");
 
 
     private String titulo;
