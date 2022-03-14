@@ -9,17 +9,20 @@ import com.example.esr.domain.service.UsuarioService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityManager;
 import java.util.List;
 
 @Service
 public class UsuarioServiceImpl implements UsuarioService {
 
     private final UsuarioRepository repository;
+    private final EntityManager manager;
 
     public static final String MSG_EMAIL_JA_CADASTRADO = "Já existe um cadastro de usuário com esse email %s.";
 
-    public UsuarioServiceImpl(UsuarioRepository repository) {
+    public UsuarioServiceImpl(UsuarioRepository repository, EntityManager manager) {
         this.repository = repository;
+        this.manager = manager;
     }
 
 
@@ -32,9 +35,13 @@ public class UsuarioServiceImpl implements UsuarioService {
     @Override
     public Usuario salvar(Usuario usuario) {
 
-        var existsEmail = repository.existsByEmail(usuario.getEmail());
+        manager.detach(usuario);
 
-        if(existsEmail){
+        //verifica se o email já existe
+        var usuarioExistente = repository.findByEmail(usuario.getEmail());
+
+        //verifica se existe um usuário com esse email e se é diferente do usuário que vem no parâmetro
+        if(usuarioExistente.isPresent() && !usuarioExistente.get().equals(usuario)){
             throw new EmailJaCadastadoException(String.format(MSG_EMAIL_JA_CADASTRADO, usuario.getEmail()));
         }
 
