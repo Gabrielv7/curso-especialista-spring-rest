@@ -1,10 +1,12 @@
 package com.example.esr.domain.service.Impl;
 
+import com.example.esr.domain.exception.NegocioException;
 import com.example.esr.domain.exception.RestauranteNaoEncontradoException;
 import com.example.esr.domain.model.Restaurante;
 import com.example.esr.domain.repository.RestauranteRepository;
 import com.example.esr.domain.service.CidadeService;
 import com.example.esr.domain.service.CozinhaService;
+import com.example.esr.domain.service.FormaPagamentoService;
 import com.example.esr.domain.service.RestauranteService;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -27,11 +29,13 @@ public class RestauranteServiceImpl implements RestauranteService {
     private final RestauranteRepository restauranteRepository;
     private final CozinhaService cozinhaService;
     private final CidadeService cidadeService;
+    private final FormaPagamentoService formaPagamentoService;
 
-    public RestauranteServiceImpl(RestauranteRepository restauranteRepository, CozinhaService cozinhaService, CidadeService cidadeService) {
+    public RestauranteServiceImpl(RestauranteRepository restauranteRepository, CozinhaService cozinhaService, CidadeService cidadeService, FormaPagamentoService formaPagamentoService) {
         this.restauranteRepository = restauranteRepository;
         this.cozinhaService = cozinhaService;
         this.cidadeService = cidadeService;
+        this.formaPagamentoService = formaPagamentoService;
     }
 
     @Override
@@ -138,6 +142,40 @@ public class RestauranteServiceImpl implements RestauranteService {
         var restaurante = this.buscarOuFalhar(id);
 
         restaurante.setAtivo(false);
+
+    }
+
+    @Transactional
+    @Override
+    public void desassociarFormaPagamento(Long idRestaurante, Long idFormaPagamento) {
+
+        var restaurante = buscarOuFalhar(idRestaurante);
+        var formaPagamento = formaPagamentoService.buscarOuFalhar(idFormaPagamento);
+
+        if(!restaurante.getFormasPagamento().contains(formaPagamento)){
+
+            throw new NegocioException("Forma de pagamento já está desassociada.");
+
+        }
+
+        restaurante.getFormasPagamento().remove(formaPagamento);
+
+    }
+
+    @Transactional
+    @Override
+    public void associarFormaPagamento(Long idRestaurante, Long idFormaPagamento) {
+
+        var restaurante = buscarOuFalhar(idRestaurante);
+        var formaPagamento = formaPagamentoService.buscarOuFalhar(idFormaPagamento);
+
+        if(restaurante.getFormasPagamento().contains(formaPagamento)){
+
+            throw new NegocioException("Forma de pagamento já está associada.");
+
+        }
+
+        restaurante.getFormasPagamento().add(formaPagamento);
 
     }
 }

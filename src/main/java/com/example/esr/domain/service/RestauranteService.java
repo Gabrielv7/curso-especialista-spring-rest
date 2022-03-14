@@ -50,4 +50,18 @@ public interface RestauranteService {
      */
     void inativar(Long id);
 
+    /**
+     * Faz a desassociação de uma forma de pagamento de um restaurante
+     * @param idRestaurante Identificador do restaurante
+     * @param idFormaPagamento Identificador da formaDePagamento
+     */
+    void desassociarFormaPagamento(Long idRestaurante, Long idFormaPagamento);
+
+    /**
+     * Faz a associação de uma forma de pagamento de um restaurante
+     * @param idRestaurante Identificador do restaurante
+     * @param idFormaPagamento Identificador da formaDePagamento
+     */
+    void associarFormaPagamento(Long idRestaurante, Long idFormaPagamento);
+
 }
