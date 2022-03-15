@@ -178,4 +178,24 @@ public class RestauranteServiceImpl implements RestauranteService {
         restaurante.getFormasPagamento().add(formaPagamento);
 
     }
+
+    @Transactional
+    @Override
+    public void abrir(Long id) {
+
+        var restaurante = this.buscarOuFalhar(id);
+
+        restaurante.setAberto(true);
+
+    }
+
+    @Transactional
+    @Override
+    public void fechar(Long id) {
+
+        var restaurante = this.buscarOuFalhar(id);
+
+        restaurante.setAberto(false);
+
+    }
 }

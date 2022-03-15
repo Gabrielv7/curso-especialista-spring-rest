@@ -64,4 +64,17 @@ public interface RestauranteService {
      */
     void associarFormaPagamento(Long idRestaurante, Long idFormaPagamento);
 
+    /**
+     * Abre um restaurante
+     * @param id Identificador do Restaurante
+     */
+    void abrir(Long id);
+
+
+    /**
+     * Fecha um restaurante
+     * @param id Identificador do Restaurante
+     */
+    void fechar(Long id);
+
 }
