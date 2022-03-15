@@ -3,6 +3,7 @@ package com.example.esr.domain.service;
 import com.example.esr.domain.model.Grupo;
 import com.example.esr.domain.exception.GrupoNaoEcontradoException;
 import com.example.esr.domain.exception.EntidadeEmUsoException;
+import com.example.esr.domain.exception.NegocioException;
 
 import java.util.List;
 
@@ -36,5 +37,21 @@ public interface GrupoService {
      * @throws EntidadeEmUsoException
      */
     void excluir(Long id);
+
+    /**
+     * Faz a associação de uma permissão a um grupo
+     * @param grupoId Identificador da permissão
+     * @param permissaoId Identificador do grupo
+     * @throws NegocioException
+     */
+    void associaPermissao(Long grupoId, Long permissaoId);
+
+    /**
+     * Faz a desassociação de uma permissão a um grupo
+     * @param grupoId Identificador da permissão
+     * @param permissaoId Identificador do grupo
+     * @throws NegocioException
+     */
+    void desassociaPermissao(Long grupoId, Long permissaoId);
 
 }

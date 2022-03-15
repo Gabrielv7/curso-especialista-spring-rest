@@ -2,6 +2,7 @@ package com.example.esr.domain.service;
 
 import com.example.esr.domain.model.Restaurante;
 import com.example.esr.domain.exception.EntidadeNaoEncontradaException;
+import com.example.esr.domain.exception.NegocioException;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
@@ -54,6 +55,7 @@ public interface RestauranteService {
      * Faz a desassociação de uma forma de pagamento de um restaurante
      * @param idRestaurante Identificador do restaurante
      * @param idFormaPagamento Identificador da formaDePagamento
+     * @throws NegocioException
      */
     void desassociarFormaPagamento(Long idRestaurante, Long idFormaPagamento);
 
@@ -61,6 +63,7 @@ public interface RestauranteService {
      * Faz a associação de uma forma de pagamento de um restaurante
      * @param idRestaurante Identificador do restaurante
      * @param idFormaPagamento Identificador da formaDePagamento
+     * @throws NegocioException
      */
     void associarFormaPagamento(Long idRestaurante, Long idFormaPagamento);
 
