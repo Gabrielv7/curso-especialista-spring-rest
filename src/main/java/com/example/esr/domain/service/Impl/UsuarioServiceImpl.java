@@ -5,6 +5,7 @@ import com.example.esr.domain.exception.NegocioException;
 import com.example.esr.domain.exception.UsuarioNaoEncontradoException;
 import com.example.esr.domain.model.Usuario;
 import com.example.esr.domain.repository.UsuarioRepository;
+import com.example.esr.domain.service.GrupoService;
 import com.example.esr.domain.service.UsuarioService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,12 +18,14 @@ public class UsuarioServiceImpl implements UsuarioService {
 
     private final UsuarioRepository repository;
     private final EntityManager manager;
+    private final GrupoService grupoService;
 
     public static final String MSG_EMAIL_JA_CADASTRADO = "Já existe um cadastro de usuário com esse email %s.";
 
-    public UsuarioServiceImpl(UsuarioRepository repository, EntityManager manager) {
+    public UsuarioServiceImpl(UsuarioRepository repository, EntityManager manager, GrupoService grupoService) {
         this.repository = repository;
         this.manager = manager;
+        this.grupoService = grupoService;
     }
 
 
@@ -66,6 +69,43 @@ public class UsuarioServiceImpl implements UsuarioService {
 
     }
 
+    @Transactional
+    @Override
+    public void associaGrupo(Long usuarioId, Long grupoId) {
+
+        var usuario = this.buscarOuFalhar(usuarioId);
+
+        var grupo = grupoService.buscarOuFalhar(grupoId);
+
+        if(usuario.getGrupos().contains(grupo)){
+
+            throw new NegocioException("Grupo já está associado a esse usuário");
+
+        }
+
+        usuario.getGrupos().add(grupo);
+
+    }
+
+    @Transactional
+    @Override
+    public void desassociaGrupo(Long usuarioId, Long grupoId) {
+
+        var usuario = this.buscarOuFalhar(usuarioId);
+
+        var grupo = grupoService.buscarOuFalhar(grupoId);
+
+        if(!usuario.getGrupos().contains(grupo)){
+
+            throw new NegocioException("Grupo já está desassociado a esse usuário");
+
+        }
+
+        usuario.getGrupos().remove(grupo);
+
+    }
+
+    @Transactional
     @Override
     public Usuario buscarOuFalhar(Long id) {
 
